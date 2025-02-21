@@ -116,5 +116,5 @@ const styles = StyleSheet.create({
   visited: { fontSize: 12, color: 'gray' },
   actions: { flexDirection: 'row', gap: 10, marginTop: 5 },
   rating: { fontSize: 16, fontWeight: 'bold', marginLeft: 10 },
-  fab: { position: 'absolute', bottom: 20, right: 20, backgroundColor: '#FF5733', padding: 15, borderRadius: 30 },
+  fab: { position: 'absolute', bottom: 150, right: 20, backgroundColor: '#FF5733', padding: 15, borderRadius: 30 },
 });
