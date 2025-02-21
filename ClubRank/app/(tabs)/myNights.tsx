@@ -1,109 +1,250 @@
-import { StyleSheet, Image, Platform } from 'react-native';
+import React from "react";
+import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet } from "react-native";
 
-import { Collapsible } from '@/components/Collapsible';
-import { ExternalLink } from '@/components/ExternalLink';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-
-export default function MyNights() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
-      headerImage={
-        <IconSymbol
-          size={310}
-          color="#808080"
-          name="chevron.left.forwardslash.chevron.right"
-          style={styles.headerImage}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Explore</ThemedText>
-      </ThemedView>
-      <ThemedText>This app includes example code to help you get started.</ThemedText>
-      <Collapsible title="File-based routing">
-        <ThemedText>
-          This app has two screens:{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/explore.tsx</ThemedText>
-        </ThemedText>
-        <ThemedText>
-          The layout file in <ThemedText type="defaultSemiBold">app/(tabs)/_layout.tsx</ThemedText>{' '}
-          sets up the tab navigator.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/router/introduction">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Android, iOS, and web support">
-        <ThemedText>
-          You can open this project on Android, iOS, and the web. To open the web version, press{' '}
-          <ThemedText type="defaultSemiBold">w</ThemedText> in the terminal running this project.
-        </ThemedText>
-      </Collapsible>
-      <Collapsible title="Images">
-        <ThemedText>
-          For static images, you can use the <ThemedText type="defaultSemiBold">@2x</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">@3x</ThemedText> suffixes to provide files for
-          different screen densities
-        </ThemedText>
-        <Image source={require('@/assets/images/react-logo.png')} style={{ alignSelf: 'center' }} />
-        <ExternalLink href="https://reactnative.dev/docs/images">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Custom fonts">
-        <ThemedText>
-          Open <ThemedText type="defaultSemiBold">app/_layout.tsx</ThemedText> to see how to load{' '}
-          <ThemedText style={{ fontFamily: 'SpaceMono' }}>
-            custom fonts such as this one.
-          </ThemedText>
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/versions/latest/sdk/font">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Light and dark mode components">
-        <ThemedText>
-          This template has light and dark mode support. The{' '}
-          <ThemedText type="defaultSemiBold">useColorScheme()</ThemedText> hook lets you inspect
-          what the user's current color scheme is, and so you can adjust UI colors accordingly.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Animations">
-        <ThemedText>
-          This template includes an example of an animated component. The{' '}
-          <ThemedText type="defaultSemiBold">components/HelloWave.tsx</ThemedText> component uses
-          the powerful <ThemedText type="defaultSemiBold">react-native-reanimated</ThemedText>{' '}
-          library to create a waving hand animation.
-        </ThemedText>
-        {Platform.select({
-          ios: (
-            <ThemedText>
-              The <ThemedText type="defaultSemiBold">components/ParallaxScrollView.tsx</ThemedText>{' '}
-              component provides a parallax effect for the header image.
-            </ThemedText>
-          ),
-        })}
-      </Collapsible>
-    </ParallaxScrollView>
-  );
-}
-
-const styles = StyleSheet.create({
-  headerImage: {
-    color: '#808080',
-    bottom: -90,
-    left: -35,
-    position: 'absolute',
+// Dummy venue rankings data
+const rankings = [
+  {
+    id: 1,
+    name: "Hide & Seek",
+    tags: ["Bar", "Jazz"],
+    rating: 9.6,
+    review: "Yea Mate, This plays rocked my nuts.",
+    users: "@habeeb @jordan @morgan",
+    image: "https://via.placeholder.com/80",
+    profilePic: "https://via.placeholder.com/30"
   },
-  titleContainer: {
-    flexDirection: 'row',
-    gap: 8,
+  {
+    id: 2,
+    name: "WonderBar",
+    tags: ["NightClub", "EDM"],
+    rating: 7.8,
+    review: "Yea Mate, This plays tickled my nuts.",
+    users: "@habeeb",
+    image: "https://via.placeholder.com/80",
+    profilePic: "https://via.placeholder.com/30"
+  },
+  {
+    id: 3,
+    name: "Manouka",
+    tags: ["Rave", "Techno"],
+    rating: 5.4,
+    review: "Yea Mate, This plays was lukewarm on my nuts.",
+    users: "@habeeb",
+    image: "https://via.placeholder.com/80",
+    profilePic: "https://via.placeholder.com/30"
+  },
+  {
+    id: 4,
+    name: "Lucky’s",
+    tags: ["Bar", "Rock"],
+    rating: 3.6,
+    review: "Yea Mate, This plays was pouring a bucket of ice on my nuts after a day's work in the Tundra.",
+    users: "@habeeb",
+    image: "https://via.placeholder.com/80",
+    profilePic: "https://via.placeholder.com/30"
+  },
+];
+
+const MyNights: React.FC = () => {
+  return (
+    <ScrollView style={styles.container}>
+      {/* Header with Profile */}
+      <View style={styles.header}>
+        <Image source={{ uri: "https://via.placeholder.com/60" }} style={styles.profilePic} />
+        <Text style={styles.headerText}>My Nights</Text>
+        <TouchableOpacity style={styles.dropdownButton}>
+          <Text style={styles.dropdownText}>⌄</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Category Tabs */}
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryScroll}>
+        {["All Venues", "Bars", "Clubs", "Raves", "Jazz"].map((category, index) => (
+          <TouchableOpacity key={index} style={styles.categoryButton}>
+            <Text style={[styles.categoryText, index === 0 && styles.activeCategory]}>{category}</Text>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+
+      {/* Your Rankings Title */}
+      <Text style={styles.sectionTitle}>Your Rankings</Text>
+
+      {/* Rankings List */}
+      {rankings.map((venue) => (
+        <View key={venue.id} style={styles.venueCard}>
+          <Image source={{ uri: venue.image }} style={styles.venueImage} />
+          <View style={styles.venueInfo}>
+            <Text style={styles.venueName}>{venue.name}</Text>
+            <View style={styles.tagContainer}>
+              {venue.tags.map((tag) => (
+                <Text key={tag} style={styles.tag}>{tag}</Text>
+              ))}
+            </View>
+            <View style={styles.userReview}>
+              <Image source={{ uri: venue.profilePic }} style={styles.reviewProfilePic} />
+              <Text style={styles.reviewText}>{venue.review}</Text>
+            </View>
+            <Text style={styles.userTags}>{venue.users}</Text>
+          </View>
+
+          {/* Rating & Icons */}
+          <View style={styles.ratingContainer}>
+            <Text style={[styles.rating, getRatingStyle(venue.rating)]}>{venue.rating}</Text>
+            <View style={styles.iconContainer}>
+              <TouchableOpacity>
+                <Text style={styles.icon}>✎</Text>
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <Text style={styles.icon}>🗑</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      ))}
+    </ScrollView>
+  );
+};
+
+// Function to color rating based on value
+const getRatingStyle = (rating: number) => {
+  if (rating >= 8) return { backgroundColor: "#4CAF50" }; // Green
+  if (rating >= 5) return { backgroundColor: "#FFC107" }; // Yellow
+  return { backgroundColor: "#F44336" }; // Red
+};
+
+export default MyNights;
+
+// Styles
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#FAFAFA",
+    paddingHorizontal: 15,
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingTop: 20,
+    paddingBottom: 10,
+  },
+  profilePic: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+  },
+  headerText: {
+    flex: 1,
+    fontSize: 22,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  dropdownButton: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  dropdownText: {
+    fontSize: 18,
+  },
+  categoryScroll: {
+    marginVertical: 10,
+  },
+  categoryButton: {
+    paddingVertical: 5,
+    paddingHorizontal: 12,
+    borderRadius: 10,
+    backgroundColor: "#E0E0E0",
+    marginRight: 8,
+  },
+  categoryText: {
+    fontSize: 14,
+    color: "#555",
+  },
+  activeCategory: {
+    fontWeight: "bold",
+    color: "#E65C4F",
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginVertical: 10,
+  },
+  venueCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#FFF",
+    padding: 10,
+    borderRadius: 10,
+    marginBottom: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  venueImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 10,
+  },
+  venueInfo: {
+    flex: 1,
+    paddingHorizontal: 10,
+  },
+  venueName: {
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  tagContainer: {
+    flexDirection: "row",
+    marginVertical: 5,
+  },
+  tag: {
+    backgroundColor: "#E0E0E0",
+    paddingVertical: 2,
+    paddingHorizontal: 6,
+    borderRadius: 5,
+    fontSize: 12,
+    marginRight: 5,
+  },
+  userReview: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 5,
+  },
+  reviewProfilePic: {
+    width: 25,
+    height: 25,
+    borderRadius: 12.5,
+    marginRight: 5,
+  },
+  reviewText: {
+    fontSize: 12,
+    color: "#666",
+  },
+  userTags: {
+    fontSize: 12,
+    color: "#666",
+  },
+  ratingContainer: {
+    alignItems: "center",
+  },
+  rating: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#FFF",
+    borderRadius: 12,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+  },
+  iconContainer: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    alignItems: "center",
+    alignSelf: "flex-end",
+    marginTop: 60,
+  },
+  icon: {
+    fontSize: 18,
+    marginHorizontal: 5,
   },
 });
