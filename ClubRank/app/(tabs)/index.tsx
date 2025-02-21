@@ -102,10 +102,10 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff', padding: 16, },
   header: { fontSize: 20, fontWeight: 'bold', textAlign: 'center', marginBottom: 40, marginTop: 60, },
-  tabs: { flexDirection: 'row', justifyContent: 'space-around', marginBottom: 10 },
+  tabs: { flexDirection: 'row', justifyContent: 'space-around', marginBottom: 30 },
   tab: { fontSize: 16, color: 'gray' },
   activeTab: { fontSize: 16, fontWeight: 'bold', color: 'black' },
-  subHeader: { fontSize: 18, fontWeight: 'bold', marginBottom: 10 },
+  subHeader: { fontSize: 18, fontWeight: 'bold', marginBottom: 30 },
   listContainer: { paddingBottom: 80 },
   card: { flexDirection: 'row', padding: 12, marginBottom: 10, borderRadius: 8, backgroundColor: '#f9f9f9', alignItems: 'center' },
   image: { width: 60, height: 60, borderRadius: 10, marginRight: 10 },
