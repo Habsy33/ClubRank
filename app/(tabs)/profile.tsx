@@ -1,222 +1,326 @@
 import React from "react";
-import { View, Text, TextInput, TouchableOpacity, Image, ScrollView, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  StyleSheet,
+  Dimensions,
+  SafeAreaView,
+} from "react-native";
 
-// Dummy venue data
-const venues = [
-  { id: 1, name: "Balls", tags: ["Bar", "Jazz"], distance: "1.1km", rating: 9.4, reviews: "10+ Reviews", image: "https://via.placeholder.com/60", userNote: "@habeeb has been here" },
-  { id: 2, name: "Shaft", tags: ["Rave", "Techno"], distance: "1.4km", rating: 9.2, reviews: "3 Reviews", image: "https://via.placeholder.com/60" },
-  { id: 3, name: "Butt", tags: ["NightClub", "EDM"], distance: "1.4km", rating: 8.8, reviews: "300 Reviews", image: "https://via.placeholder.com/60" },
-  { id: 4, name: "Pimples", tags: ["Show", "Comedy"], distance: "1.4km", rating: 8.1, reviews: "10+ Reviews", image: "https://via.placeholder.com/60" },
-];
+const { width } = Dimensions.get("window");
 
-// Venue Image Component
-const VenueImage = ({ uri }: { uri: string }) => (
-  <Image source={{ uri }} style={styles.venueImage} />
-);
-
-const Explore: React.FC = () => {
+const ProfileScreen: React.FC = () => {
   return (
-    <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={[styles.headerText, { flex: 1, textAlign: "center" }]}>Fresh Finds</Text>
-        <TouchableOpacity>
-          <Text style={styles.menuButton}>⋮</Text>
-        </TouchableOpacity>
+    <SafeAreaView style={styles.container}>
+      {/* Top Section with Background Color */}
+      <View style={styles.topContainer}>
+        {/* Top Row: Username (Left), Plus Sign & Settings (Right) */}
+        <View style={styles.topRow}>
+          <Text style={styles.username}>habeeb.rtw</Text>
+          <View style={styles.rightIcons}>
+            {/* Plus sign aligned with settings */}
+            <TouchableOpacity style={styles.plusButton}>
+              <Text style={styles.plusText}>+</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.settingsButton}>
+              <Text style={styles.settingsIcon}>☰</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Avatar & Basic Info */}
+        <View style={styles.avatarWrapper}>
+          {/* Local image for profile picture */}
+          <Image
+            source={require("@/assets/images/TempProfilePic.png")}
+            style={styles.avatar}
+          />
+          <Text style={styles.statsText}>
+            255 Followers • 32 Reviews • 200 Following
+          </Text>
+          <Text style={styles.bioText}>I like to go places ig...</Text>
+
+          {/* Buttons: Edit / Share */}
+          <View style={styles.profileActions}>
+            <TouchableOpacity style={styles.actionButton}>
+              <Text style={styles.actionButtonText}>Edit Profile</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.actionButton}>
+              <Text style={styles.actionButtonText}>Share Profile</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
       </View>
 
-
-
-      {/* Search Inputs */}
-      <TextInput placeholder="Search Venues..." style={styles.searchBar} placeholderTextColor="#999" />
-      <TextInput placeholder="Enter Location..." style={styles.searchBar} placeholderTextColor="#999" />
-
-      {/* Categories */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryScroll}>
-        {["All Venues", "Bars", "Clubs", "Raves", "Jazz"].map((category) => (
-          <TouchableOpacity key={category} style={styles.categoryButton}>
-            <Text style={styles.categoryText}>{category}</Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-
-      {/* Top Venues */}
-      <Text style={styles.sectionTitle}>Top Venues</Text>
-      <ScrollView>
-        {venues.map((venue, index) => (
-          <View key={venue.id} style={styles.venueCard}>
-            <Text style={styles.venueRank}>{index + 1}</Text>
-            <VenueImage uri={venue.image} />
-            <View style={styles.venueInfo}>
-              <Text style={styles.venueName}>{venue.name}</Text>
-              <View style={styles.tagContainer}>
-                {venue.tags.map((tag) => (
-                  <Text key={tag} style={styles.tag}>{tag}</Text>
-                ))}
+      {/* Scrollable Content Below */}
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        {/* Top 3 Ranked Visits - Side by Side */}
+        <View style={styles.sectionContainer}>
+          <Text style={styles.sectionTitle}>Your top 3 ranked visits...</Text>
+          <View style={styles.topThreeRow}>
+            {[1, 2, 3].map((rank) => (
+              <View style={styles.topThreeItem} key={rank}>
+                <View style={styles.rankBadge}>
+                  <Text style={styles.rankBadgeText}>{rank}</Text>
+                </View>
+                <Text style={styles.visitPlace}>Hide &amp; Seek</Text>
+                <Text style={styles.visitDetails}>⭐ 8.7</Text>
+                <Text style={styles.visitDetails}>Visited Recently</Text>
               </View>
-              <Text style={styles.distance}>{venue.distance}</Text>
-              {venue.userNote && <Text style={styles.userNote}>{venue.userNote}</Text>}
-              <Text style={styles.rating}>
-                <Text style={{ fontWeight: "bold", color: "#E65C4F" }}>{venue.rating}</Text>
-                <Text style={styles.reviews}> ({venue.reviews})</Text>
+            ))}
+          </View>
+        </View>
+
+        {/* Where You're Going */}
+        <View style={styles.sectionContainer}>
+          <Text style={styles.sectionTitle}>See where you’re going...</Text>
+          <View style={styles.goingRow}>
+            {/* Small image on the left */}
+            <Image
+              source={require("@/assets/images/HidennSeekProPic.png")}
+              style={styles.goingImage}
+            />
+            <Text style={styles.goingText}>Hide &amp; Seek • 12/12</Text>
+            <TouchableOpacity>
+              <Text style={styles.seeMoreGoingText}>See more &gt;</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Recent Reviews */}
+        <View style={styles.sectionContainer}>
+          <Text style={styles.sectionTitle}>Recent Reviews...</Text>
+          <View style={styles.reviewItem}>
+            {/* Local image on the left */}
+            <Image
+              source={require("@/assets/images/HidennSeekProPic.png")}
+              style={styles.reviewImage}
+            />
+            <View style={styles.reviewTextContainer}>
+              <Text style={styles.reviewTitle}>
+                Hide &amp; Seek • ⭐ 8.7 • 1.3km • Bar
+              </Text>
+              <Text style={styles.reviewSnippet}>Visited Recently</Text>
+              <Text style={styles.reviewSnippet}>
+                Avoid this place if you hate fun...
               </Text>
             </View>
-            {/* Icons in a horizontal row */}
-            <View style={styles.iconContainer}>
-              <TouchableOpacity><Text style={styles.icon}>★</Text></TouchableOpacity>
-              <TouchableOpacity><Text style={styles.icon}>＋</Text></TouchableOpacity>
-              <TouchableOpacity><Text style={styles.icon}>🔖</Text></TouchableOpacity>
-            </View>
           </View>
-        ))}
+          {/* Centered "See More Reviews..." */}
+          <TouchableOpacity style={styles.seeMoreButton}>
+            <Text style={styles.seeMoreButtonText}>See More Reviews...</Text>
+          </TouchableOpacity>
+        </View>
       </ScrollView>
 
-      {/* Show More Button */}
-      <TouchableOpacity style={styles.showMoreButton}>
-        <Text style={styles.showMoreText}>Show More</Text>
-      </TouchableOpacity>
-    </View>
+      {/* Bottom Navigation (Optional) */}
+      <View style={styles.bottomNav}>
+        <TouchableOpacity style={styles.navButton}>
+          <Text>Feed</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.navButton}>
+          <Text>Discover</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.navButton}>
+          <Text>Rate Page</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.navButton}>
+          <Text>My Nights</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.navButton}>
+          <Text>Profile</Text>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
   );
 };
 
-export default Explore;
+export default ProfileScreen;
 
-// Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: "#FAFAFA",
-    paddingTop: 50
+    backgroundColor: "#FFF",
   },
-  header: {
+  // Top portion background
+  topContainer: {
+    backgroundColor: "#FF5E62",
+    paddingHorizontal: 15,
+    paddingTop: 10,
+    paddingBottom: 20,
+  },
+  topRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  username: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#FFF",
+  },
+  rightIcons: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 10,
   },
-  headerText: {
+  plusButton: {
+    marginRight: 15,
+    marginTop: -2,
+  },
+  plusText: {
+    fontSize: 20,
+    color: "#FFF",
+    fontWeight: "600",
+  },
+  settingsButton: {
+    padding: 10,
+  },
+  settingsIcon: {
     fontSize: 22,
-    fontWeight: "bold",
+    color: "#FFF",
+  },
+  avatarWrapper: {
+    alignItems: "center",
+    marginTop: 10,
+  },
+  avatar: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginBottom: 8,
+    resizeMode: "cover",
+  },
+  statsText: {
+    color: "#FFF",
+    marginBottom: 5,
+  },
+  bioText: {
+    color: "#FFF",
+    marginBottom: 10,
+    textAlign: "center",
+    paddingHorizontal: 20,
+  },
+  profileActions: {
+    flexDirection: "row",
+    marginTop: 5,
+  },
+  actionButton: {
+    backgroundColor: "#EEE",
+    paddingVertical: 8,
+    paddingHorizontal: 15,
+    borderRadius: 5,
+    marginHorizontal: 5,
+  },
+  actionButtonText: {
     color: "#333",
   },
-  menuButton: {
-    fontSize: 24,
-    color: "#999",
+  scrollContent: {
+    paddingHorizontal: 20,
+    paddingVertical: 20,
   },
-  searchBar: {
-    width: "80%",
-    alignSelf: "center",
-    padding: 12,
-    marginVertical: 5,
-    borderWidth: 1,
-    borderColor: "",
-    borderRadius: 8,
-    backgroundColor: "white",
-  },
-  categoryScroll: {
-    marginTop: 10,
-    marginBottom: 50,
-  },
-  categoryButton: {
-    backgroundColor: "#E0E0E0",
-    paddingVertical: 2,
-    paddingHorizontal: 8,
-    marginRight: 8,
-    borderRadius: 10,
-  },
-  categoryText: {
-    fontSize: 12,
-    color: "",
+  sectionContainer: {
+    marginBottom: 20,
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: "bold",
-    color: "#444",
-    marginTop: -30, // Moves "Top Venues" up without affecting category buttons
-    textAlign: "center",
+    fontWeight: "600",
+    marginBottom: 8,
   },
-  venueCard: {
+  topThreeRow: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+  },
+  topThreeItem: {
+    alignItems: "center",
+    width: width * 0.25,
+  },
+  rankBadge: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: "#FFA500",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 5,
+  },
+  rankBadgeText: {
+    color: "#FFF",
+    fontWeight: "bold",
+  },
+  visitPlace: {
+    fontWeight: "600",
+    marginBottom: 2,
+  },
+  visitDetails: {
+    color: "#333",
+    fontSize: 12,
+  },
+  // "See where you're going" section
+  goingRow: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ddd",
-    backgroundColor: "#FFF",
-    borderRadius: 10,
-    marginVertical: 5,
+    justifyContent: "space-between",
   },
-  venueRank: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#444",
-    marginRight: 10,
+  goingImage: {
+    width: 30,
+    height: 30,
+    resizeMode: "cover",
+    marginRight: 8,
   },
-  venueImage: {
-    width: 60,
-    height: 60,
-    borderRadius: 10,
-  },
-  venueInfo: {
+  goingText: {
     flex: 1,
-    paddingLeft: 10,
-  },
-  venueName: {
     fontSize: 16,
-    fontWeight: "bold",
     color: "#333",
   },
-  tagContainer: {
+  seeMoreGoingText: {
+    color: "#007AFF",
+    fontWeight: "500",
+  },
+  // Recent Reviews
+  reviewItem: {
     flexDirection: "row",
-    marginVertical: 2,
+    alignItems: "center",
   },
-  tag: {
-    backgroundColor: "#FF7622",
-    paddingVertical: 2,
-    paddingHorizontal: 6,
-    marginRight: 5,
+  reviewImage: {
+    width: 60,
+    height: 60,
     borderRadius: 5,
-    fontSize: 10,
-    color: "#555",
+    marginRight: 10,
+    resizeMode: "cover",
   },
-  distance: {
-    fontSize: 12,
+  reviewTextContainer: {
+    flex: 1,
+  },
+  reviewTitle: {
+    fontWeight: "bold",
+    marginBottom: 2,
+  },
+  reviewSnippet: {
     color: "#777",
   },
-  userNote: {
-    fontSize: 12,
-    color: "#4285F4",
-  },
-  rating: {
-    fontSize: 14,
-    fontWeight: "bold",
-    marginTop: 2,
-  },
-  reviews: {
-    fontSize: 12,
-    color: "#666",
-  },
-  iconContainer: {
-    flexDirection: "row", 
-    justifyContent: "flex-end",
-    alignItems: "center",
-    alignSelf: "flex-end",
-    gap: 10, 
-  },
-  icon: {
-    fontSize: 20,
-    color: "#FFA726",
-  },
-  showMoreButton: {
-    backgroundColor: "#FFF",
-    padding: 10,
-    alignItems: "center",
-    borderRadius: 5,
+  seeMoreButton: {
     marginTop: 10,
-    borderWidth: 1,
-    borderColor: "#E0E0E0",
+    alignSelf: "center",
   },
-  showMoreText: {
-    color: "#E65C4F",
-    fontWeight: "bold",
+  seeMoreButtonText: {
+    color: "#007AFF",
+    fontWeight: "500",
+  },
+  // Bottom navigation bar
+  bottomNav: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+    height: 60,
+    borderTopWidth: 1,
+    borderTopColor: "#CCC",
+  },
+  navButton: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
