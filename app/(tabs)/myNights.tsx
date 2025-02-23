@@ -40,8 +40,8 @@ const rankings = [
     rating: 3.6,
     review: "Yea Mate, This plays was pouring a bucket of ice on my nuts after a day's work in the Tundra.",
     users: "@habeeb",
-    image: "https://via.placeholder.com/80",
-    profilePic: "https://via.placeholder.com/30"
+    image: "@/assets/images/hidenseek.png",
+    profilePic: "@/assets/images/hidenseek.png"
   },
 ];
 
@@ -49,7 +49,8 @@ const MyNights: React.FC = () => {
   return (
     <ScrollView style={styles.container}>
       {/* Header with Profile */}
-      <View style={styles.header}>
+      <View style={styles.headerContainer}>
+        <Text style={styles.header}>ClubRank</Text>
         <Image source={{ uri: "https://via.placeholder.com/60" }} style={styles.profilePic} />
         <Text style={styles.headerText}>My Nights</Text>
         <TouchableOpacity style={styles.dropdownButton}>
@@ -121,11 +122,19 @@ const styles = StyleSheet.create({
     backgroundColor: "#FAFAFA",
     paddingHorizontal: 15,
   },
+  headerContainer: {
+    paddingBottom: 16,
+    backgroundColor: '#fff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
   header: {
     flexDirection: "row",
-    alignItems: "center",
-    paddingTop: 20,
-    paddingBottom: 10,
+    textAlign: "center",
+    marginTop: 60,
+    fontSize: 25,
+    fontWeight: "bold",
+    marginBottom: -75,
   },
   profilePic: {
     width: 50,
@@ -134,26 +143,31 @@ const styles = StyleSheet.create({
   },
   headerText: {
     flex: 1,
-    fontSize: 22,
+    fontSize: 35,
     fontWeight: "bold",
     textAlign: "center",
+    marginTop: 40,
   },
   dropdownButton: {
     paddingHorizontal: 10,
     paddingVertical: 5,
   },
   dropdownText: {
-    fontSize: 18,
+    fontSize: 35,
+    marginLeft: 300,
+    marginTop: -55,
   },
   categoryScroll: {
     marginVertical: 10,
   },
   categoryButton: {
     paddingVertical: 5,
+    marginTop: 10,
     paddingHorizontal: 12,
     borderRadius: 10,
     backgroundColor: "#E0E0E0",
     marginRight: 8,
+    
   },
   categoryText: {
     fontSize: 14,

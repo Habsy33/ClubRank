@@ -8,8 +8,6 @@ const venues = [
   { id: '4', name: 'Fort crop', location: 'London, UK' },
   { id: '5', name: 'Titty bar', location: 'Lambin, UK' },
   { id: '6', name: 'LittleMons Crib', location: 'London, UK' },
-  { id: '7', name: 'Ed Sheerans', location: 'London, UK' },
-  { id: '8', name: 'Superbowl XV', location: 'Patent FL' },
 ];
 
 const RatePage = () => {
@@ -25,6 +23,7 @@ const RatePage = () => {
       <View style={styles.headerContainer}>
         <Text style={styles.header}>ClubRank</Text>
         <Text style={styles.header1}>Nightlife Venue Finder</Text>
+        <Text style={styles.header2}>Rate The Joint!</Text>
       </View>
 
       {/* Fixed Search Bar */}
@@ -66,21 +65,29 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   headerContainer: {
-    paddingTop: 50,
     paddingBottom: 16,
     backgroundColor: '#fff',
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
   },
   header: {
-    fontSize: 30,
+    fontSize: 25,
     fontWeight: 'bold',
     textAlign: 'center',
+    marginTop: 50,
   },
   header1: {
     fontSize: 15,
     textAlign: 'center',
     marginTop: 5,
+    marginBottom: 15,
+  },
+  header2: {
+    fontSize: 30,
+    textAlign: 'center',
+    marginTop: 5,
+    fontWeight: "bold",
+    marginBottom: 15,
   },
   searchContainer: {
     paddingHorizontal: 16,
@@ -89,6 +96,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
     marginTop: -3,
+    marginBottom: 5,
   },
   searchBar: {
     height: 40,

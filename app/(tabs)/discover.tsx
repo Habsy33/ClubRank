@@ -30,7 +30,7 @@ const Discover: React.FC = () => {
 
         {/* Categories */}
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryScroll}>
-          {["All Venues", "Bars", "Clubs", "Raves", "Jazz"].map((category) => (
+          {["All Venues", "Distance","Bars", "Clubs", "Raves", "Jazz", "Capacity"].map((category) => (
             <TouchableOpacity key={category} style={styles.categoryButton}>
               <Text style={styles.categoryText}>{category}</Text>
             </TouchableOpacity>
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
   },
   subHeaderContainer: {
     alignItems: "center",
-    marginBottom: 20,
+    marginBottom: 10,
   },
   subHeader: {
     fontSize: 40,
@@ -122,8 +122,10 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: "white",
     fontSize: 16,
+  
   },
   categoryScroll: {
+    marginTop: 2,
     marginBottom: 20,
   },
   categoryButton: {
