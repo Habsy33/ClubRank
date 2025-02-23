@@ -42,7 +42,7 @@ export default function HomeScreen() {
     {
       id: '3',
       venue: 'Wonderbar',
-      type: 'Nightclub',
+      type: 'Club',
       distance: '1.4km',
       rating: 9.2,
       review: 'Great vibe, live DJ was insane...',
@@ -75,7 +75,7 @@ export default function HomeScreen() {
     {
       id: '6',
       venue: 'Wonderbar',
-      type: 'Nightclub',
+      type: 'Club',
       distance: '1.4km',
       rating: 9.2,
       review: 'Great vibe, live DJ was insane...',
