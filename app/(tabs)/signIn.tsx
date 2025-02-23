@@ -7,8 +7,12 @@ import {
   StyleSheet,
   SafeAreaView,
 } from "react-native";
+import { Redirect } from 'expo-router';
+import { useRouter } from 'expo-router';
 
 const SignInScreen: React.FC = () => {
+
+  const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -81,7 +85,7 @@ const SignInScreen: React.FC = () => {
         {/* Footer: Already have an account? Sign In. */}
         <View style={styles.footer}>
           <Text style={styles.footerText}>Do not have an account?</Text>
-          <TouchableOpacity onPress={() => console.log("Navigate to Sign In")}>
+          <TouchableOpacity onPress={() => router.push('../(tabs)/signUp')}>
             <Text style={styles.footerLink}> Sign Up.</Text>
           </TouchableOpacity>
         </View>
@@ -89,8 +93,6 @@ const SignInScreen: React.FC = () => {
     </SafeAreaView>
   );
 };
-
-export default SignInScreen;
 
 // --------------------- STYLES ---------------------
 const styles = StyleSheet.create({
@@ -177,3 +179,5 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
 });
+
+export default SignInScreen;

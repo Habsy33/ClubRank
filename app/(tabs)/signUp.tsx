@@ -10,7 +10,12 @@ import {
   Dimensions,
 } from "react-native";
 
+import { Redirect } from 'expo-router';
+import { useRouter } from 'expo-router';
+
 const { width } = Dimensions.get("window");
+
+const router = useRouter();
 
 // Replace with your desired header image URL or local require(...) statement
 const HEADER_IMAGE_URI =
@@ -128,7 +133,7 @@ const SignUpScreen: React.FC = () => {
         {/* Footer: Already have an account? Sign In */}
         <View style={styles.footer}>
           <Text style={styles.footerText}>Already have an account?</Text>
-          <TouchableOpacity onPress={() => console.log("Navigate to Sign In")}>
+          <TouchableOpacity onPress={() => router.push('../(tabs)/signIn')}>
             <Text style={styles.signInLink}> Sign In.</Text>
           </TouchableOpacity>
         </View>
