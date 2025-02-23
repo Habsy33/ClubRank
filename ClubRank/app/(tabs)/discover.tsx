@@ -14,7 +14,7 @@ const VenueImage = ({ uri }: { uri: string }) => (
   <Image source={{ uri }} style={styles.venueImage} />
 );
 
-const Explore: React.FC = () => {
+const Discover: React.FC = () => {
   return (
     <View style={styles.container}>
       {/* Header */}
@@ -79,7 +79,7 @@ const Explore: React.FC = () => {
   );
 };
 
-export default Explore;
+export default Discover;
 
 // Styles
 const styles = StyleSheet.create({
