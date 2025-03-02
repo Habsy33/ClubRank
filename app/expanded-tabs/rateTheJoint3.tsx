@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, TextInput, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 
-const RateTheJoint1 = () => {
-
-  const [selectedCategory, setSelectedCategory] = useState('Nightclub');
-
+const RateTheJoint3 = () => {
   const router = useRouter();
+  const [rating, setRating] = useState(5.0); // Default rating
+  const [reviewText, setReviewText] = useState('');
 
   const venue = {
     name: 'Hide & Seek',
@@ -17,12 +16,7 @@ const RateTheJoint1 = () => {
     image: require('@/assets/images/hidenseek.png'), // Replace with your image path
   };
 
-  const categories = ['Nightclub', 'Bar', 'Rave', 'Party'];
-
-  // Function to truncate the description
-  const truncateDescription = (text: string, maxLength: number) => {
-    return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
-  };
+  const scaleValues = Array.from({ length: 90 }, (_, i) => (i + 10) / 10); // 1.0 to 9.9
 
   return (
     <View style={styles.container}>
@@ -38,7 +32,7 @@ const RateTheJoint1 = () => {
 
         {/* Progress Indicator */}
         <View style={styles.progressBox}>
-          <Text style={styles.progressText}>1 of 4</Text>
+          <Text style={styles.progressText}>3 of 4</Text>
         </View>
       </View>
 
@@ -60,39 +54,59 @@ const RateTheJoint1 = () => {
 
           {/* Venue Description */}
           <Text style={styles.venueDescription}>
-            {truncateDescription(venue.description, 100)}
+            {venue.description}
           </Text>
         </View>
       </View>
 
-      {/* Category Selection Subheader */}
-      <Text style={styles.subHeader}>Category of Venue</Text>
+      {/* Subheader */}
+      <Text style={styles.subHeader}>What Was It Like?</Text>
 
-      {/* Category Option Wheel */}
-      <View style={styles.categoryWheel}>
-        {categories.map((category, index) => (
+      {/* Textbox for Review */}
+      <View style={styles.textBox}>
+        <TextInput
+          style={styles.textInput}
+          multiline
+          placeholder="Write your review here..."
+          value={reviewText}
+          onChangeText={setReviewText}
+        />
+        <View style={styles.textBoxIcons}>
+          <TouchableOpacity style={styles.iconButton}>
+            <Ionicons name="image" size={24} color="#FF5733" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.iconButton}>
+            <Ionicons name="mic" size={24} color="#FF5733" />
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      {/* Scale Prompt */}
+      <Text style={styles.scalePrompt}>Ok damn, on a scale of 1 - 10?</Text>
+
+      {/* Scale Picker */}
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.scalePicker}>
+        {scaleValues.map((value, index) => (
           <TouchableOpacity
             key={index}
             style={[
-              styles.categoryOption,
-              selectedCategory === category && styles.selectedCategoryOption,
+              styles.scaleButton,
+              rating === value && styles.selectedScaleButton,
             ]}
-            onPress={() => setSelectedCategory(category)}
+            onPress={() => setRating(value)}
           >
-            <Text
-              style={[
-                styles.categoryOptionText,
-                selectedCategory === category && styles.selectedCategoryText,
-              ]}
-            >
-              {category}
+            <Text style={[
+              styles.scaleButtonText,
+              rating === value && styles.selectedScaleButtonText,
+            ]}>
+              {value.toFixed(1)}
             </Text>
           </TouchableOpacity>
         ))}
-      </View>
+      </ScrollView>
 
       {/* Next Button */}
-      <TouchableOpacity style={styles.nextButton} onPress={() => router.push('/expanded-tabs/rateTheJoint2')}>
+      <TouchableOpacity style={styles.nextButton} onPress={() => router.push('/expanded-tabs/rateTheJoint4')}>
         <Text style={styles.nextButtonText}>Next →</Text>
       </TouchableOpacity>
     </View>
@@ -193,38 +207,59 @@ const styles = StyleSheet.create({
     color: '#9C9BA6',
     textAlign: 'center',
   },
-  categoryWheel: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
+  textBox: {
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 8,
+    padding: 10,
+    marginBottom: 20,
   },
-  categoryOption: {
-    width: '48%',
-    padding: 12,
+  textInput: {
+    fontSize: 16,
+    minHeight: 100,
+    textAlignVertical: 'top',
+  },
+  textBoxIcons: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginTop: 10,
+  },
+  iconButton: {
+    marginLeft: 10,
+  },
+  scalePrompt: {
+    fontSize: 18,
+    fontWeight: 'bold',
     marginBottom: 10,
+    textAlign: 'center',
+  },
+  scalePicker: {
+    marginBottom: 20,
+  },
+  scaleButton: {
+    padding: 10,
+    marginRight: 10,
     backgroundColor: '#f9f9f9',
     borderRadius: 8,
     alignItems: 'center',
   },
-  selectedCategoryOption: {
+  selectedScaleButton: {
     backgroundColor: '#FF5733',
   },
-  categoryOptionText: {
+  scaleButtonText: {
     fontSize: 16,
     color: '#000',
   },
-  selectedCategoryText: {
-    fontSize: 24,
-    fontWeight: 'bold',
+  selectedScaleButtonText: {
     color: '#fff',
   },
   nextButton: {
-    bottom: -100,
-    borderRadius: 10,
+    position: 'absolute',
+    bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: '#b3b9ba',
-    padding: 20,
+    backgroundColor: '#000',
+    padding: 16,
     alignItems: 'center',
   },
   nextButtonText: {
@@ -234,4 +269,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RateTheJoint1;
+export default RateTheJoint3;

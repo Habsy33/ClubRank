@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, TextInput, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 
-const RateTheJoint1 = () => {
-
-  const [selectedCategory, setSelectedCategory] = useState('Nightclub');
-
+const RateTheJoint4 = () => {
   const router = useRouter();
+  const [rating, setRating] = useState(5.0); // Default rating
+  const [reviewText, setReviewText] = useState('');
 
   const venue = {
     name: 'Hide & Seek',
@@ -17,12 +16,7 @@ const RateTheJoint1 = () => {
     image: require('@/assets/images/hidenseek.png'), // Replace with your image path
   };
 
-  const categories = ['Nightclub', 'Bar', 'Rave', 'Party'];
-
-  // Function to truncate the description
-  const truncateDescription = (text: string, maxLength: number) => {
-    return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
-  };
+  const scaleValues = Array.from({ length: 90 }, (_, i) => (i + 10) / 10); // 1.0 to 9.9
 
   return (
     <View style={styles.container}>
@@ -38,7 +32,7 @@ const RateTheJoint1 = () => {
 
         {/* Progress Indicator */}
         <View style={styles.progressBox}>
-          <Text style={styles.progressText}>1 of 4</Text>
+          <Text style={styles.progressText}>4 of 4</Text>
         </View>
       </View>
 
@@ -60,40 +54,57 @@ const RateTheJoint1 = () => {
 
           {/* Venue Description */}
           <Text style={styles.venueDescription}>
-            {truncateDescription(venue.description, 100)}
+            {venue.description}
           </Text>
         </View>
       </View>
 
-      {/* Category Selection Subheader */}
-      <Text style={styles.subHeader}>Category of Venue</Text>
-
-      {/* Category Option Wheel */}
-      <View style={styles.categoryWheel}>
-        {categories.map((category, index) => (
-          <TouchableOpacity
-            key={index}
-            style={[
-              styles.categoryOption,
-              selectedCategory === category && styles.selectedCategoryOption,
-            ]}
-            onPress={() => setSelectedCategory(category)}
-          >
-            <Text
-              style={[
-                styles.categoryOptionText,
-                selectedCategory === category && styles.selectedCategoryText,
-              ]}
-            >
-              {category}
-            </Text>
-          </TouchableOpacity>
-        ))}
+      {/* Subheader and Save to Drafts */}
+      <View style={styles.subHeaderRow}>
+        <Text style={styles.subHeader}>Almost Done...</Text>
+        <TouchableOpacity style={styles.saveToDrafts}>
+          <Ionicons name="create-outline" size={20} color="#FF5733" />
+          <Text style={styles.saveToDraftsText}>Save to Drafts</Text>
+        </TouchableOpacity>
       </View>
 
-      {/* Next Button */}
-      <TouchableOpacity style={styles.nextButton} onPress={() => router.push('/expanded-tabs/rateTheJoint2')}>
-        <Text style={styles.nextButtonText}>Next →</Text>
+      {/* Textbox for Review */}
+      <View style={styles.textBox}>
+        <TextInput
+          style={styles.textInput}
+          multiline
+          placeholder="Write your review here..."
+          value={reviewText}
+          onChangeText={setReviewText}
+        />
+        <View style={styles.textBoxIcons}>
+          <TouchableOpacity style={styles.iconButton}>
+            <Ionicons name="image" size={24} color="#FF5733" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.iconButton}>
+            <Ionicons name="mic" size={24} color="#FF5733" />
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      {/* Three Image Icons */}
+      <View style={styles.imageIconsContainer}>
+        <Ionicons name="image" size={50} color="#FF5733" style={styles.imageIcon} />
+        <Ionicons name="image" size={50} color="#FF5733" style={styles.imageIcon} />
+        <Ionicons name="image" size={50} color="#FF5733" style={styles.imageIcon} />
+      </View>
+
+      {/* Who Did You Go With? */}
+      <Text style={styles.whoDidYouGoWith}>Who did you go with?</Text>
+
+      {/* Tag Friends Button */}
+      <TouchableOpacity style={styles.tagFriendsButton}>
+        <Text style={styles.tagFriendsButtonText}>Tag Friends?</Text>
+      </TouchableOpacity>
+
+      {/* Submit Review Button */}
+      <TouchableOpacity style={styles.nextButton} onPress={() => router.push('/expanded-tabs/rateTheJoint4')}>
+        <Text style={styles.nextButtonText}>Post Your Review →</Text>
       </TouchableOpacity>
     </View>
   );
@@ -185,46 +196,83 @@ const styles = StyleSheet.create({
     color: '#666',
     marginTop: 10,
   },
+  subHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
   subHeader: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20,
-    marginTop: 20,
     color: '#9C9BA6',
-    textAlign: 'center',
   },
-  categoryWheel: {
+  saveToDrafts: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-  },
-  categoryOption: {
-    width: '48%',
-    padding: 12,
-    marginBottom: 10,
-    backgroundColor: '#f9f9f9',
-    borderRadius: 8,
     alignItems: 'center',
   },
-  selectedCategoryOption: {
-    backgroundColor: '#FF5733',
-  },
-  categoryOptionText: {
+  saveToDraftsText: {
     fontSize: 16,
+    color: '#FF5733',
+    marginLeft: 5,
+  },
+  textBox: {
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 8,
+    padding: 10,
+    marginBottom: 20,
+  },
+  textInput: {
+    fontSize: 16,
+    minHeight: 100,
+    textAlignVertical: 'top',
+  },
+  textBoxIcons: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginTop: 10,
+  },
+  iconButton: {
+    marginLeft: 10,
+  },
+  imageIconsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  imageIcon: {
+    flex: 1,
+    textAlign: 'center',
+  },
+  whoDidYouGoWith: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  tagFriendsButton: {
+    backgroundColor: '#f9f9f9',
+    padding: 20,
+    borderRadius: 25,
+    alignItems: 'center',
+    marginTop: 10,
+    marginBottom: 20,
+    marginLeft: 70,
+    marginRight: 40,
+  },
+  tagFriendsButtonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
     color: '#000',
   },
-  selectedCategoryText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#fff',
-  },
   nextButton: {
-    bottom: -100,
-    borderRadius: 10,
+    position: 'absolute',
+    bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: '#b3b9ba',
-    padding: 20,
+    backgroundColor: '#000',
+    padding: 16,
     alignItems: 'center',
   },
   nextButtonText: {
@@ -234,4 +282,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RateTheJoint1;
+export default RateTheJoint4;

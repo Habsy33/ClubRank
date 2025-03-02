@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 
-const RateTheJoint1 = () => {
-
-  const [selectedCategory, setSelectedCategory] = useState('Nightclub');
-
+const RateTheJoint2 = () => {
+  const [selectedDate, setSelectedDate] = useState('2023-10-01');
+  const [arrivalTime, setArrivalTime] = useState('18:00');
+  const [duration, setDuration] = useState('2 hours');
   const router = useRouter();
 
   const venue = {
@@ -14,15 +14,10 @@ const RateTheJoint1 = () => {
     type: 'Bar',
     distance: '1.4km',
     description: 'A vibrant bar with a great selection of drinks and a lively atmosphere. Perfect for a night out with friends!',
-    image: require('@/assets/images/hidenseek.png'), // Replace with your image path
+    image: require('@/assets/images/hidenseek.png'), 
   };
 
-  const categories = ['Nightclub', 'Bar', 'Rave', 'Party'];
-
-  // Function to truncate the description
-  const truncateDescription = (text: string, maxLength: number) => {
-    return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
-  };
+  const dates = ['2023-10-01', '2023-10-02', '2023-10-03', '2023-10-04', '2023-10-05'];
 
   return (
     <View style={styles.container}>
@@ -38,7 +33,7 @@ const RateTheJoint1 = () => {
 
         {/* Progress Indicator */}
         <View style={styles.progressBox}>
-          <Text style={styles.progressText}>1 of 4</Text>
+          <Text style={styles.progressText}>2 of 4</Text>
         </View>
       </View>
 
@@ -60,39 +55,58 @@ const RateTheJoint1 = () => {
 
           {/* Venue Description */}
           <Text style={styles.venueDescription}>
-            {truncateDescription(venue.description, 100)}
+            {venue.description}
           </Text>
         </View>
       </View>
 
-      {/* Category Selection Subheader */}
-      <Text style={styles.subHeader}>Category of Venue</Text>
+      {/* Subheader */}
+      <Text style={styles.subHeader}>When Did You Go?</Text>
 
-      {/* Category Option Wheel */}
-      <View style={styles.categoryWheel}>
-        {categories.map((category, index) => (
+      {/* Horizontal Date Picker */}
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.datePicker}>
+        {dates.map((date, index) => (
           <TouchableOpacity
             key={index}
             style={[
-              styles.categoryOption,
-              selectedCategory === category && styles.selectedCategoryOption,
+              styles.dateButton,
+              selectedDate === date && styles.selectedDateButton,
             ]}
-            onPress={() => setSelectedCategory(category)}
+            onPress={() => setSelectedDate(date)}
           >
-            <Text
-              style={[
-                styles.categoryOptionText,
-                selectedCategory === category && styles.selectedCategoryText,
-              ]}
-            >
-              {category}
+            <Text style={[
+              styles.dateButtonText,
+              selectedDate === date && styles.selectedDateButtonText,
+            ]}>
+              {date}
             </Text>
           </TouchableOpacity>
         ))}
+      </ScrollView>
+
+      {/* From and Duration Panels */}
+      <View style={styles.panelsContainer}>
+        {/* From Panel */}
+        <View style={styles.panel}>
+          <Text style={styles.panelLabel}>From</Text>
+          <Text style={styles.panelValue}>{arrivalTime}</Text>
+          <TouchableOpacity style={styles.panelButton}>
+            <Text style={styles.panelButtonText}>Edit</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Duration Panel */}
+        <View style={styles.panel}>
+          <Text style={styles.panelLabel}>Duration</Text>
+          <Text style={styles.panelValue}>{duration}</Text>
+          <TouchableOpacity style={styles.panelButton}>
+            <Text style={styles.panelButtonText}>Edit</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* Next Button */}
-      <TouchableOpacity style={styles.nextButton} onPress={() => router.push('/expanded-tabs/rateTheJoint2')}>
+      <TouchableOpacity style={styles.nextButton} onPress={() => router.push('/expanded-tabs/rateTheJoint3')}>
         <Text style={styles.nextButtonText}>Next →</Text>
       </TouchableOpacity>
     </View>
@@ -193,38 +207,65 @@ const styles = StyleSheet.create({
     color: '#9C9BA6',
     textAlign: 'center',
   },
-  categoryWheel: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
+  datePicker: {
+    marginBottom: 20,
   },
-  categoryOption: {
-    width: '48%',
-    padding: 12,
-    marginBottom: 10,
+  dateButton: {
+    padding: 10,
+    marginRight: 10,
     backgroundColor: '#f9f9f9',
     borderRadius: 8,
     alignItems: 'center',
   },
-  selectedCategoryOption: {
+  selectedDateButton: {
     backgroundColor: '#FF5733',
   },
-  categoryOptionText: {
+  dateButtonText: {
     fontSize: 16,
     color: '#000',
   },
-  selectedCategoryText: {
-    fontSize: 24,
+  selectedDateButtonText: {
+    color: '#fff',
+  },
+  panelsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  panel: {
+    width: '48%',
+    padding: 16,
+    backgroundColor: '#f9f9f9',
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  panelLabel: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  panelValue: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  panelButton: {
+    backgroundColor: '#FF5733',
+    padding: 8,
+    borderRadius: 8,
+  },
+  panelButtonText: {
+    fontSize: 14,
     fontWeight: 'bold',
     color: '#fff',
   },
   nextButton: {
-    bottom: -100,
-    borderRadius: 10,
+    position: 'absolute',
+    bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: '#b3b9ba',
-    padding: 20,
+    backgroundColor: '#000',
+    padding: 16,
     alignItems: 'center',
   },
   nextButtonText: {
@@ -234,4 +275,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RateTheJoint1;
+export default RateTheJoint2;

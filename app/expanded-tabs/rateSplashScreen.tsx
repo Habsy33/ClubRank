@@ -1,13 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
 
 const RateTheJoint1 = () => {
-
   const [selectedCategory, setSelectedCategory] = useState('Nightclub');
-
-  const router = useRouter();
 
   const venue = {
     name: 'Hide & Seek',
@@ -92,7 +88,7 @@ const RateTheJoint1 = () => {
       </View>
 
       {/* Next Button */}
-      <TouchableOpacity style={styles.nextButton} onPress={() => router.push('/expanded-tabs/rateTheJoint2')}>
+      <TouchableOpacity style={styles.nextButton}>
         <Text style={styles.nextButtonText}>Next →</Text>
       </TouchableOpacity>
     </View>
