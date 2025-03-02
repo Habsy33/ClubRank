@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 
 interface Review {
   id: string;
@@ -15,6 +16,7 @@ interface Review {
 }
 
 export default function HomeScreen() {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState('All');
   const reviews: Review[] = [
     {
@@ -83,7 +85,6 @@ export default function HomeScreen() {
       image: require('@/assets/images/rave.jpg'),
       reviewCount: 20,
     },
-
   ];
 
   const truncateReview = (text: string, length: number) => {
@@ -119,10 +120,29 @@ export default function HomeScreen() {
             <TouchableOpacity><Ionicons name="bookmark-outline" size={20} color="black" /></TouchableOpacity>
           </View>
         </View>
-        
       </View>
     </View>
   );
+
+  const handleTabPress = (tab: string) => {
+    setActiveTab(tab);
+    switch (tab) { //Note to self: remove the animation when the tab gets redirected
+      case 'All':
+        router.replace('/');
+        break;
+      case 'Top Reviews':
+        router.replace('/');
+        break;
+      case 'Near You':
+        router.replace('/');
+        break;
+      case 'Friends Going': 
+        router.replace('/expanded-tabs/friendsGoing');
+        break;
+      default:
+        router.replace('/');
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -131,7 +151,7 @@ export default function HomeScreen() {
       
       <View style={styles.tabs}>
         {['All', 'Top Reviews', 'Near You', 'Friends Going'].map(tab => (
-          <TouchableOpacity key={tab} onPress={() => setActiveTab(tab)}>
+          <TouchableOpacity key={tab} onPress={() => handleTabPress(tab)}>
             <Text style={[styles.tab, activeTab === tab && styles.activeTab]}>{tab}</Text>
           </TouchableOpacity>
         ))}
@@ -187,7 +207,6 @@ const styles = StyleSheet.create({
   reviewCount: { fontSize: 14, color: 'gray' },
   actions: { flexDirection: 'row', gap: 10, marginTop: 5, justifyContent: 'flex-end' },
   fab: { position: 'absolute', bottom: 20, right: 20, backgroundColor: '#FF5733', padding: 15, borderRadius: 30 },
-
   rowHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   venueType: { backgroundColor: 'rgba(255, 119, 34, 0.28)', opacity: 40, padding: 4, paddingHorizontal: 12, borderRadius: 12, fontSize: 14, fontWeight: 'bold', marginLeft: 10, },
   venueDistance: { marginLeft: -10, fontSize: 12, marginRight: -20 },

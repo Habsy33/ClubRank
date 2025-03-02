@@ -1,5 +1,7 @@
 import React from 'react';
 import { View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { useRouter } from 'expo-router';
+
 
 const venues = [
   { id: '1', name: 'Wonderland', location: 'Lambin, UK' },
@@ -12,7 +14,7 @@ const venues = [
 
 const RatePage = () => {
   const [searchQuery, setSearchQuery] = React.useState('');
-
+  const router = useRouter();
   const filteredVenues = venues.filter(venue =>
     venue.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -51,7 +53,7 @@ const RatePage = () => {
           )}
           scrollEnabled={false} // Disable scrolling for FlatList inside ScrollView
         />
-        <TouchableOpacity style={styles.customButton}>
+        <TouchableOpacity style={styles.customButton} onPress={() => router.push('/expanded-tabs/rateTheJoint1')}>
           <Text style={styles.customButtonText}>Can't find your event? BUILD CUSTOM</Text>
         </TouchableOpacity>
       </ScrollView>
