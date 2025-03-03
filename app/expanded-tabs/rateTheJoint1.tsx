@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 
 const RateTheJoint1 = () => {
-
   const [selectedCategory, setSelectedCategory] = useState('Nightclub');
-
   const router = useRouter();
 
   const venue = {
@@ -42,54 +40,57 @@ const RateTheJoint1 = () => {
         </View>
       </View>
 
-      {/* Venue Name Header */}
-      <Text style={styles.venueHeader}>{venue.name}</Text>
+      {/* Scrollable Content */}
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        {/* Venue Name Header */}
+        <Text style={styles.venueHeader}>{venue.name}</Text>
 
-      {/* Venue Card */}
-      <View style={styles.card}>
-        <Image source={venue.image} style={styles.largeImage} />
-        <View style={styles.cardContent}>
-          <View style={styles.rowHeader}>
-            <Text style={styles.venueName}>{venue.name}</Text>
-            <Text style={styles.venueDistance}>{venue.distance}</Text>
-            <Text style={styles.venueType}>{venue.type}</Text>
-            <TouchableOpacity>
-              <Ionicons name="ellipsis-horizontal" size={20} color="gray" />
-            </TouchableOpacity>
-          </View>
+        {/* Venue Card */}
+        <View style={styles.card}>
+          <Image source={venue.image} style={styles.largeImage} />
+          <View style={styles.cardContent}>
+            <View style={styles.rowHeader}>
+              <Text style={styles.venueName}>{venue.name}</Text>
+              <Text style={styles.venueDistance}>{venue.distance}</Text>
+              <Text style={styles.venueType}>{venue.type}</Text>
+              <TouchableOpacity>
+                <Ionicons name="ellipsis-horizontal" size={20} color="gray" />
+              </TouchableOpacity>
+            </View>
 
-          {/* Venue Description */}
-          <Text style={styles.venueDescription}>
-            {truncateDescription(venue.description, 100)}
-          </Text>
-        </View>
-      </View>
-
-      {/* Category Selection Subheader */}
-      <Text style={styles.subHeader}>Category of Venue</Text>
-
-      {/* Category Option Wheel */}
-      <View style={styles.categoryWheel}>
-        {categories.map((category, index) => (
-          <TouchableOpacity
-            key={index}
-            style={[
-              styles.categoryOption,
-              selectedCategory === category && styles.selectedCategoryOption,
-            ]}
-            onPress={() => setSelectedCategory(category)}
-          >
-            <Text
-              style={[
-                styles.categoryOptionText,
-                selectedCategory === category && styles.selectedCategoryText,
-              ]}
-            >
-              {category}
+            {/* Venue Description */}
+            <Text style={styles.venueDescription}>
+              {truncateDescription(venue.description, 100)}
             </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+          </View>
+        </View>
+
+        {/* Category Selection Subheader */}
+        <Text style={styles.subHeader}>Category of Venue</Text>
+
+        {/* Category Option Wheel */}
+        <View style={styles.categoryWheel}>
+          {categories.map((category, index) => (
+            <TouchableOpacity
+              key={index}
+              style={[
+                styles.categoryOption,
+                selectedCategory === category && styles.selectedCategoryOption,
+              ]}
+              onPress={() => setSelectedCategory(category)}
+            >
+              <Text
+                style={[
+                  styles.categoryOptionText,
+                  selectedCategory === category && styles.selectedCategoryText,
+                ]}
+              >
+                {category}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </ScrollView>
 
       {/* Next Button */}
       <TouchableOpacity style={styles.nextButton} onPress={() => router.push('/expanded-tabs/rateTheJoint2')}>
@@ -102,15 +103,15 @@ const RateTheJoint1 = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
     backgroundColor: '#fff',
   },
   topBar: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 40,
-    marginBottom: 40,
+    padding: 16,
+    paddingTop: 40,
+    backgroundColor: '#fff',
   },
   backButton: {
     padding: 8,
@@ -129,6 +130,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
     color: '#000',
+  },
+  scrollContent: {
+    padding: 16,
+    paddingTop: 0, // Remove top padding to avoid extra space
   },
   venueHeader: {
     fontSize: 35,
@@ -219,12 +224,11 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   nextButton: {
-    bottom: -100,
+    bottom: 40,
     borderRadius: 10,
-    left: 0,
-    right: 0,
     backgroundColor: '#b3b9ba',
     padding: 20,
+    marginHorizontal: 20,
     alignItems: 'center',
   },
   nextButtonText: {

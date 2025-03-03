@@ -36,6 +36,10 @@ const RateTheJoint4 = () => {
         </View>
       </View>
 
+      {/* Scrollable Content */}
+    <ScrollView contentContainerStyle={styles.scrollContent}>
+
+    
       {/* Venue Name Header */}
       <Text style={styles.venueHeader}>{venue.name}</Text>
 
@@ -102,6 +106,8 @@ const RateTheJoint4 = () => {
         <Text style={styles.tagFriendsButtonText}>Tag Friends?</Text>
       </TouchableOpacity>
 
+  </ScrollView>
+
       {/* Submit Review Button */}
       <TouchableOpacity style={styles.nextButton} onPress={() => router.push('/expanded-tabs/rateTheJoint4')}>
         <Text style={styles.nextButtonText}>Post Your Review →</Text>
@@ -113,7 +119,6 @@ const RateTheJoint4 = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
     backgroundColor: '#fff',
   },
   topBar: {
@@ -135,6 +140,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 8,
+  },
+  scrollContent: {
+    padding: 16,
+    paddingBottom: 20,
   },
   progressText: {
     fontSize: 14,
@@ -258,21 +267,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 10,
     marginBottom: 20,
-    marginLeft: 70,
-    marginRight: 40,
+    marginHorizontal: 20,
   },
   tagFriendsButtonText: {
     fontSize: 16,
     fontWeight: 'bold',
     color: '#000',
+    alignItems: 'center',
   },
   nextButton: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: '#000',
-    padding: 16,
+    bottom: 10,
+    borderRadius: 10,
+    backgroundColor: '#b3b9ba',
+    padding: 20,
+    marginHorizontal: 20,
     alignItems: 'center',
   },
   nextButtonText: {

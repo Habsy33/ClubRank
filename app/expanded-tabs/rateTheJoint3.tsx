@@ -18,23 +18,28 @@ const RateTheJoint3 = () => {
 
   const scaleValues = Array.from({ length: 90 }, (_, i) => (i + 10) / 10); // 1.0 to 9.9
 
+  const handleNext = () => {
+    // You can add any validation or data processing here before navigating
+    router.push('/expanded-tabs/rateTheJoint4');
+  };
+
   return (
     <View style={styles.container}>
       {/* Top Bar */}
       <View style={styles.topBar}>
-        {/* Back Button */}
-        <TouchableOpacity style={styles.backButton}>
+        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
           <Ionicons name="arrow-back" size={24} color="#000" />
         </TouchableOpacity>
 
-        {/* Page Title */}
         <Text style={styles.pageTitle}>Rate The Joint</Text>
 
-        {/* Progress Indicator */}
         <View style={styles.progressBox}>
           <Text style={styles.progressText}>3 of 4</Text>
         </View>
       </View>
+
+      {/* Scrollable Content */}
+    <ScrollView contentContainerStyle={styles.scrollContent}>
 
       {/* Venue Name Header */}
       <Text style={styles.venueHeader}>{venue.name}</Text>
@@ -52,10 +57,7 @@ const RateTheJoint3 = () => {
             </TouchableOpacity>
           </View>
 
-          {/* Venue Description */}
-          <Text style={styles.venueDescription}>
-            {venue.description}
-          </Text>
+          <Text style={styles.venueDescription}>{venue.description}</Text>
         </View>
       </View>
 
@@ -104,11 +106,13 @@ const RateTheJoint3 = () => {
           </TouchableOpacity>
         ))}
       </ScrollView>
+    </ScrollView>
 
       {/* Next Button */}
-      <TouchableOpacity style={styles.nextButton} onPress={() => router.push('/expanded-tabs/rateTheJoint4')}>
+      <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
         <Text style={styles.nextButtonText}>Next →</Text>
       </TouchableOpacity>
+
     </View>
   );
 };
@@ -116,7 +120,6 @@ const RateTheJoint3 = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
     backgroundColor: '#fff',
   },
   topBar: {
@@ -149,6 +152,18 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 25,
     textAlign: 'center',
+  },
+  nextButton: {
+    bottom: 40,
+    borderRadius: 10,
+    backgroundColor: '#b3b9ba',
+    padding: 20,
+    marginHorizontal: 20,
+    alignItems: 'center',
+  },
+  scrollContent: {
+    padding: 16,
+    paddingTop: 0,
   },
   card: {
     flexDirection: 'row',
@@ -252,15 +267,6 @@ const styles = StyleSheet.create({
   },
   selectedScaleButtonText: {
     color: '#fff',
-  },
-  nextButton: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: '#000',
-    padding: 16,
-    alignItems: 'center',
   },
   nextButtonText: {
     fontSize: 18,

@@ -14,7 +14,7 @@ const RateTheJoint2 = () => {
     type: 'Bar',
     distance: '1.4km',
     description: 'A vibrant bar with a great selection of drinks and a lively atmosphere. Perfect for a night out with friends!',
-    image: require('@/assets/images/hidenseek.png'), 
+    image: require('@/assets/images/hidenseek.png'), // Replace with your image path
   };
 
   const dates = ['2023-10-01', '2023-10-02', '2023-10-03', '2023-10-04', '2023-10-05'];
@@ -37,73 +37,76 @@ const RateTheJoint2 = () => {
         </View>
       </View>
 
-      {/* Venue Name Header */}
-      <Text style={styles.venueHeader}>{venue.name}</Text>
+      {/* Scrollable Content */}
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        {/* Venue Name Header */}
+        <Text style={styles.venueHeader}>{venue.name}</Text>
 
-      {/* Venue Card */}
-      <View style={styles.card}>
-        <Image source={venue.image} style={styles.largeImage} />
-        <View style={styles.cardContent}>
-          <View style={styles.rowHeader}>
-            <Text style={styles.venueName}>{venue.name}</Text>
-            <Text style={styles.venueDistance}>{venue.distance}</Text>
-            <Text style={styles.venueType}>{venue.type}</Text>
-            <TouchableOpacity>
-              <Ionicons name="ellipsis-horizontal" size={20} color="gray" />
+        {/* Venue Card */}
+        <View style={styles.card}>
+          <Image source={venue.image} style={styles.largeImage} />
+          <View style={styles.cardContent}>
+            <View style={styles.rowHeader}>
+              <Text style={styles.venueName}>{venue.name}</Text>
+              <Text style={styles.venueDistance}>{venue.distance}</Text>
+              <Text style={styles.venueType}>{venue.type}</Text>
+              <TouchableOpacity>
+                <Ionicons name="ellipsis-horizontal" size={20} color="gray" />
+              </TouchableOpacity>
+            </View>
+
+            {/* Venue Description */}
+            <Text style={styles.venueDescription}>
+              {venue.description}
+            </Text>
+          </View>
+        </View>
+
+        {/* Subheader */}
+        <Text style={styles.subHeader}>When Did You Go?</Text>
+
+        {/* Horizontal Date Picker */}
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.datePicker}>
+          {dates.map((date, index) => (
+            <TouchableOpacity
+              key={index}
+              style={[
+                styles.dateButton,
+                selectedDate === date && styles.selectedDateButton,
+              ]}
+              onPress={() => setSelectedDate(date)}
+            >
+              <Text style={[
+                styles.dateButtonText,
+                selectedDate === date && styles.selectedDateButtonText,
+              ]}>
+                {date}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+
+        {/* From and Duration Panels */}
+        <View style={styles.panelsContainer}>
+          {/* From Panel */}
+          <View style={styles.panel}>
+            <Text style={styles.panelLabel}>From</Text>
+            <Text style={styles.panelValue}>{arrivalTime}</Text>
+            <TouchableOpacity style={styles.panelButton}>
+              <Text style={styles.panelButtonText}>Edit</Text>
             </TouchableOpacity>
           </View>
 
-          {/* Venue Description */}
-          <Text style={styles.venueDescription}>
-            {venue.description}
-          </Text>
+          {/* Duration Panel */}
+          <View style={styles.panel}>
+            <Text style={styles.panelLabel}>Duration</Text>
+            <Text style={styles.panelValue}>{duration}</Text>
+            <TouchableOpacity style={styles.panelButton}>
+              <Text style={styles.panelButtonText}>Edit</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
-
-      {/* Subheader */}
-      <Text style={styles.subHeader}>When Did You Go?</Text>
-
-      {/* Horizontal Date Picker */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.datePicker}>
-        {dates.map((date, index) => (
-          <TouchableOpacity
-            key={index}
-            style={[
-              styles.dateButton,
-              selectedDate === date && styles.selectedDateButton,
-            ]}
-            onPress={() => setSelectedDate(date)}
-          >
-            <Text style={[
-              styles.dateButtonText,
-              selectedDate === date && styles.selectedDateButtonText,
-            ]}>
-              {date}
-            </Text>
-          </TouchableOpacity>
-        ))}
       </ScrollView>
-
-      {/* From and Duration Panels */}
-      <View style={styles.panelsContainer}>
-        {/* From Panel */}
-        <View style={styles.panel}>
-          <Text style={styles.panelLabel}>From</Text>
-          <Text style={styles.panelValue}>{arrivalTime}</Text>
-          <TouchableOpacity style={styles.panelButton}>
-            <Text style={styles.panelButtonText}>Edit</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Duration Panel */}
-        <View style={styles.panel}>
-          <Text style={styles.panelLabel}>Duration</Text>
-          <Text style={styles.panelValue}>{duration}</Text>
-          <TouchableOpacity style={styles.panelButton}>
-            <Text style={styles.panelButtonText}>Edit</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
 
       {/* Next Button */}
       <TouchableOpacity style={styles.nextButton} onPress={() => router.push('/expanded-tabs/rateTheJoint3')}>
@@ -116,15 +119,15 @@ const RateTheJoint2 = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
     backgroundColor: '#fff',
   },
   topBar: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 40,
-    marginBottom: 40,
+    padding: 16,
+    paddingTop: 40,
+    backgroundColor: '#fff',
   },
   backButton: {
     padding: 8,
@@ -143,6 +146,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
     color: '#000',
+  },
+  scrollContent: {
+    padding: 16,
+    paddingTop: 0, // Remove top padding to avoid extra space
   },
   venueHeader: {
     fontSize: 35,
@@ -260,12 +267,11 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   nextButton: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: '#000',
-    padding: 16,
+    bottom: 40,
+    borderRadius: 10,
+    backgroundColor: '#b3b9ba',
+    padding: 20,
+    marginHorizontal: 20,
     alignItems: 'center',
   },
   nextButtonText: {

@@ -42,6 +42,21 @@ export default function RootLayout() {
           options={{ headerShown: false }}
         />
 
+        <Stack.Screen
+          name="expanded-tabs/rateTheJoint2" 
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="expanded-tabs/rateTheJoint3" 
+          options={{ headerShown: false }}
+        />
+
+        <Stack.Screen
+          name="expanded-tabs/rateTheJoint4" 
+          options={{ headerShown: false }}
+        />
+
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />
