@@ -24,7 +24,7 @@ const RateTheJoint2 = () => {
       {/* Top Bar */}
       <View style={styles.topBar}>
         {/* Back Button */}
-        <TouchableOpacity style={styles.backButton}>
+        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
           <Ionicons name="arrow-back" size={24} color="#000" />
         </TouchableOpacity>
 

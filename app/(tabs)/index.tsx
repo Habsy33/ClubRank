@@ -92,6 +92,7 @@ export default function HomeScreen() {
   };
 
   const renderReview = ({ item }: { item: Review }) => (
+  <TouchableOpacity onPress={() =>  router.push('/expanded-tabs/venueDetails')}>
     <View style={styles.card}>
       <Image source={item.image} style={styles.largeImage} />
       <View style={styles.cardContent}>
@@ -116,12 +117,13 @@ export default function HomeScreen() {
           </View>
           <View style={styles.actions}>
             <TouchableOpacity><Ionicons name="star-outline" size={20} color="black" /></TouchableOpacity>
-            <TouchableOpacity><Ionicons name="add-circle-outline" size={20} color="black" /></TouchableOpacity>
+            <TouchableOpacity onPress={() =>  router.push('/expanded-tabs/rateTheJoint1')}><Ionicons name="add-circle-outline" size={20} color="black"/></TouchableOpacity>
             <TouchableOpacity><Ionicons name="bookmark-outline" size={20} color="black" /></TouchableOpacity>
           </View>
         </View>
       </View>
     </View>
+  </TouchableOpacity>
   );
 
   const handleTabPress = (tab: string) => {
