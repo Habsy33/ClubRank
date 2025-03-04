@@ -1,4 +1,5 @@
-import React from "react";
+import { useRouter } from "expo-router";
+import React, { useState } from "react";
 import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet } from "react-native";
 
 // Dummy venue rankings data
@@ -46,25 +47,67 @@ const rankings = [
 ];
 
 const Futurespots: React.FC = () => {
+  const router = useRouter();
+  const [dropdownVisible, setDropdownVisible] = useState(false);
+
   return (
     <ScrollView style={styles.container}>
       {/* Header with Profile */}
       <View style={styles.headerContainer}>
         <Text style={styles.header}>ClubRank</Text>
-        <Image source={{ uri: "https://via.placeholder.com/60" }} style={styles.profilePic} />
+        <Image
+          source={{ uri: "https://via.placeholder.com/60" }}
+          style={styles.profilePic}
+        />
         <Text style={styles.headerText}>FutureSpots</Text>
-        <TouchableOpacity style={styles.dropdownButton}>
+        <TouchableOpacity
+          style={styles.dropdownButton}
+          onPress={() => setDropdownVisible(!dropdownVisible)}
+        >
           <Text style={styles.dropdownText}>⌄</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Category Tabs */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryScroll}>
-        {["All Venues", "Bars", "Clubs", "Raves", "Jazz"].map((category, index) => (
-          <TouchableOpacity key={index} style={styles.categoryButton}>
-            <Text style={[styles.categoryText, index === 0 && styles.activeCategory]}>{category}</Text>
+      {/* Dropdown Menu */}
+      {dropdownVisible && (
+        <View style={styles.dropdownMenu}>
+          <TouchableOpacity
+            onPress={() => {
+              setDropdownVisible(false);
+              router.push("/expanded-tabs/Drafts"); // Navigate to Drafts
+            }}
+          >
+            <Text style={styles.dropdownItem}>Drafts</Text>
           </TouchableOpacity>
-        ))}
+          
+          <TouchableOpacity
+            onPress={() => {
+              setDropdownVisible(false);
+              router.push("/(tabs)/myNights"); // Navigate to My Nights
+            }}
+          >
+            <Text style={styles.dropdownItem}>My Nights</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
+      {/* Category Tabs */}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={styles.categoryScroll}
+      >
+        {["All Venues", "Bars", "Clubs", "Raves", "Jazz"].map(
+          (category, index) => (
+            <TouchableOpacity key={index} style={styles.categoryButton}>
+              <Text
+                style={[styles.categoryText, index === 0 && styles.activeCategory]}
+              >
+                {category}
+              </Text>
+            </TouchableOpacity>
+          )
+        )}
       </ScrollView>
 
       {/* Your Rankings Title */}
@@ -78,7 +121,9 @@ const Futurespots: React.FC = () => {
             <Text style={styles.venueName}>{venue.name}</Text>
             <View style={styles.tagContainer}>
               {venue.tags.map((tag) => (
-                <Text key={tag} style={styles.tag}>{tag}</Text>
+                <Text key={tag} style={styles.tag}>
+                  {tag}
+                </Text>
               ))}
             </View>
             <View style={styles.userReview}>
@@ -90,7 +135,9 @@ const Futurespots: React.FC = () => {
 
           {/* Rating & Icons */}
           <View style={styles.ratingContainer}>
-            <Text style={[styles.rating, getRatingStyle(venue.rating)]}>{venue.rating}</Text>
+            <Text style={[styles.rating, getRatingStyle(venue.rating)]}>
+              {venue.rating}
+            </Text>
             <View style={styles.iconContainer}>
               <TouchableOpacity style={styles.plusButton}>
                 <Text style={styles.plusSymbol}>+</Text>
@@ -114,6 +161,7 @@ const getRatingStyle = (rating: number) => {
 };
 
 export default Futurespots;
+
 
 // Styles
 const styles = StyleSheet.create({
@@ -176,6 +224,25 @@ const styles = StyleSheet.create({
   activeCategory: {
     fontWeight: "bold",
     color: "#E65C4F",
+  },
+  dropdownMenu: {
+    position: "absolute",
+    top: 50,
+    right: 10,
+    backgroundColor: "white",
+    padding: 10,
+    borderRadius: 5,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  dropdownItem: {
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    fontSize: 16,
+    color: "#333",
   },
   sectionTitle: {
     fontSize: 18,

@@ -64,22 +64,29 @@ const MyNights: React.FC = () => {
         </TouchableOpacity>
       </View>
 
-      {/* Dropdown Menu */}
-      {dropdownVisible && (
-        <View style={styles.dropdownMenu}>
-          <TouchableOpacity onPress={() => setDropdownVisible(false)}>
-            <Text style={styles.dropdownItem}>Drafts</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              setDropdownVisible(false);
-              router.push("/expanded-tabs/Futurespots"); // Navigate to FutureSpots
-            }}
-          >
-            <Text style={styles.dropdownItem}>FutureSpots</Text>
-          </TouchableOpacity>
-        </View>
-      )}
+{/* Dropdown Menu */}
+{dropdownVisible && (
+  <View style={styles.dropdownMenu}>
+    <TouchableOpacity
+      onPress={() => {
+        setDropdownVisible(false);
+        router.push("/expanded-tabs/Drafts"); // Navigate to Drafts page
+      }}
+    >
+      <Text style={styles.dropdownItem}>Drafts</Text>
+    </TouchableOpacity>
+    
+    <TouchableOpacity
+      onPress={() => {
+        setDropdownVisible(false);
+        router.push("/expanded-tabs/Futurespots"); // Navigate to FutureSpots
+      }}
+    >
+      <Text style={styles.dropdownItem}>FutureSpots</Text>
+    </TouchableOpacity>
+  </View>
+)}
+
 
       {/* Category Tabs */}
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryScroll}>
@@ -150,14 +157,14 @@ const styles = StyleSheet.create({
   headerContainer: {
     alignItems: "center", // Center content horizontally
     justifyContent: "center",
-    paddingVertical: 20, // Adjust padding to bring it lower
+    paddingVertical: 40, // Adjust padding to bring it lower
     backgroundColor: "#fff",
   },
   header: {
     fontSize: 28,
     fontWeight: "bold",
     textAlign: "center",
-    marginBottom: -40, // Move closer to "My Nights"
+    marginBottom: -80, // Move closer to "My Nights"
   },
   profilePic: {
     width: 50,
