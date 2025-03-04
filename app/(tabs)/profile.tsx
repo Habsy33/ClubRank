@@ -1,4 +1,5 @@
 import React from "react";
+import { useRouter } from "expo-router";
 import {
   View,
   Text,
@@ -13,6 +14,7 @@ import {
 const { width } = Dimensions.get("window");
 
 const ProfileScreen: React.FC = () => {
+    const router = useRouter();
   return (
     <SafeAreaView style={styles.container}>
       {/* Top Section with Background Color */}
@@ -25,7 +27,7 @@ const ProfileScreen: React.FC = () => {
             <TouchableOpacity style={styles.plusButton}>
               <Text style={styles.plusText}>+</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.settingsButton}>
+            <TouchableOpacity style={styles.settingsButton} onPress={() => {router.push("/expanded-tabs/Settings")}}>
               <Text style={styles.settingsIcon}>☰</Text>
             </TouchableOpacity>
           </View>
