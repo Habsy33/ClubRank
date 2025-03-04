@@ -1,7 +1,7 @@
-import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import React from "react";
 import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet } from "react-native";
 
+// Dummy venue rankings data
 const rankings = [
   {
     id: 1,
@@ -11,7 +11,7 @@ const rankings = [
     review: "Yea Mate, This plays rocked my nuts.",
     users: "@habeeb @jordan @morgan",
     image: "https://via.placeholder.com/80",
-    profilePic: "https://via.placeholder.com/30",
+    profilePic: "https://via.placeholder.com/30"
   },
   {
     id: 2,
@@ -21,7 +21,7 @@ const rankings = [
     review: "Yea Mate, This plays tickled my nuts.",
     users: "@habeeb",
     image: "https://via.placeholder.com/80",
-    profilePic: "https://via.placeholder.com/30",
+    profilePic: "https://via.placeholder.com/30"
   },
   {
     id: 3,
@@ -31,7 +31,7 @@ const rankings = [
     review: "Yea Mate, This plays was lukewarm on my nuts.",
     users: "@habeeb",
     image: "https://via.placeholder.com/80",
-    profilePic: "https://via.placeholder.com/30",
+    profilePic: "https://via.placeholder.com/30"
   },
   {
     id: 4,
@@ -41,45 +41,22 @@ const rankings = [
     review: "Yea Mate, This plays was pouring a bucket of ice on my nuts after a day's work in the Tundra.",
     users: "@habeeb",
     image: "@/assets/images/hidenseek.png",
-    profilePic: "@/assets/images/hidenseek.png",
+    profilePic: "@/assets/images/hidenseek.png"
   },
 ];
 
-const MyNights: React.FC = () => {
-  const router = useRouter();
-  const [dropdownVisible, setDropdownVisible] = useState(false);
-
+const Drafts: React.FC = () => {
   return (
     <ScrollView style={styles.container}>
-      {/* Header Section */}
+      {/* Header with Profile */}
       <View style={styles.headerContainer}>
         <Text style={styles.header}>ClubRank</Text>
         <Image source={{ uri: "https://via.placeholder.com/60" }} style={styles.profilePic} />
-      </View>
-
-      {/* Centered Title with Dropdown */}
-      <View style={styles.titleContainer}>
-        <TouchableOpacity onPress={() => setDropdownVisible(!dropdownVisible)} style={styles.dropdownButton}>
-          <Text style={styles.headerText}>My Nights ⌄</Text>
+        <Text style={styles.headerText}>Drafts</Text>
+        <TouchableOpacity style={styles.dropdownButton}>
+          <Text style={styles.dropdownText}>⌄</Text>
         </TouchableOpacity>
       </View>
-
-      {/* Dropdown Menu */}
-      {dropdownVisible && (
-        <View style={styles.dropdownMenu}>
-          <TouchableOpacity onPress={() => setDropdownVisible(false)}>
-            <Text style={styles.dropdownItem}>Drafts</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              setDropdownVisible(false);
-              router.push("/expanded-tabs/Futurespots"); // Navigate to FutureSpots
-            }}
-          >
-            <Text style={styles.dropdownItem}>FutureSpots</Text>
-          </TouchableOpacity>
-        </View>
-      )}
 
       {/* Category Tabs */}
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryScroll}>
@@ -136,78 +113,50 @@ const getRatingStyle = (rating: number) => {
   return { backgroundColor: "#F44336" }; // Red
 };
 
-export default MyNights;
+export default Drafts;
 
 // Styles
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#FFF",
-    paddingHorizontal: 15,
     flex: 1,
+    backgroundColor: "#FAFAFA",
+    paddingHorizontal: 15,
   },
-
-  // Header Section
   headerContainer: {
-    alignItems: "center", // Center content horizontally
-    justifyContent: "center",
-    paddingVertical: 20, // Adjust padding to bring it lower
-    backgroundColor: "#fff",
+    paddingBottom: 16,
+    backgroundColor: '#fff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
   },
   header: {
-    fontSize: 28,
-    fontWeight: "bold",
+    flexDirection: "row",
     textAlign: "center",
-    marginBottom: -40, // Move closer to "My Nights"
+    marginTop: 60,
+    fontSize: 25,
+    fontWeight: "bold",
+    marginBottom: -75,
   },
   profilePic: {
     width: 50,
     height: 50,
     borderRadius: 25,
-    marginTop: 10, // Adjust space between "ClubRank" and the profile picture
-  },
-
-  // Centered Title with Dropdown
-  titleContainer: {
-    alignItems: "center",
-    paddingVertical: 10,
-    marginTop: -20, // Adjust space between "ClubRank" and "My Nights"
   },
   headerText: {
-    fontSize: 24,
+    flex: 1,
+    fontSize: 35,
     fontWeight: "bold",
     textAlign: "center",
+    marginTop: 40,
   },
-
   dropdownButton: {
     paddingHorizontal: 10,
     paddingVertical: 5,
   },
-
-  dropdownMenu: {
-    position: "absolute",
-    top: 90, // Adjust dropdown position
-    alignSelf: "center",
-    backgroundColor: "#fff",
-    borderRadius: 8,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 5,
-    width: 160,
-    zIndex: 1000,
+  dropdownText: {
+    fontSize: 35,
+    marginLeft: 300,
+    marginTop: -55,
   },
-
-  dropdownItem: {
-    padding: 12,
-    fontSize: 16,
-    color: "#333",
-    textAlign: "center",
-    borderBottomWidth: 1,
-    borderBottomColor: "#ddd",
-  },
-
-  // Category Tabs
   categoryScroll: {
     marginVertical: 10,
   },
@@ -218,6 +167,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: "#E0E0E0",
     marginRight: 8,
+    
   },
   categoryText: {
     fontSize: 14,
@@ -227,22 +177,18 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#E65C4F",
   },
-
-  // Rankings Section
   sectionTitle: {
     fontSize: 18,
     fontWeight: "bold",
     marginVertical: 10,
   },
-
-  // Venue Cards
   venueCard: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#FFF",
-    padding: 12,
+    padding: 10,
     borderRadius: 10,
-    marginBottom: 12,
+    marginBottom: 10,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -256,26 +202,24 @@ const styles = StyleSheet.create({
   },
   venueInfo: {
     flex: 1,
-    paddingHorizontal: 12,
+    paddingHorizontal: 10,
   },
   venueName: {
     fontSize: 16,
     fontWeight: "bold",
   },
-
   tagContainer: {
     flexDirection: "row",
     marginVertical: 5,
   },
   tag: {
     backgroundColor: "#E0E0E0",
-    paddingVertical: 3,
-    paddingHorizontal: 8,
+    paddingVertical: 2,
+    paddingHorizontal: 6,
     borderRadius: 5,
     fontSize: 12,
     marginRight: 5,
   },
-
   userReview: {
     flexDirection: "row",
     alignItems: "center",
@@ -290,14 +234,11 @@ const styles = StyleSheet.create({
   reviewText: {
     fontSize: 12,
     color: "#666",
-    flexShrink: 1,
   },
   userTags: {
     fontSize: 12,
     color: "#666",
   },
-
-  // Rating & Icons
   ratingContainer: {
     alignItems: "center",
   },
@@ -311,12 +252,13 @@ const styles = StyleSheet.create({
   },
   iconContainer: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "flex-end",
     alignItems: "center",
-    marginTop: 8,
+    alignSelf: "flex-end",
+    marginTop: 60,
   },
   icon: {
     fontSize: 18,
-    marginHorizontal: 6,
+    marginHorizontal: 5,
   },
 });

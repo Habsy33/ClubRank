@@ -61,6 +61,11 @@ export default function RootLayout() {
           name="expanded-tabs/venueDetails" 
           options={{ headerShown: false }}
         />
+        <Stack.Screen
+          name="expanded-tabs/Futurespots"
+          options={{ headerShown: false }} 
+        />
+
         []
         <Stack.Screen name="+not-found" />
       </Stack>
