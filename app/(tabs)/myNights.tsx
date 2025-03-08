@@ -1,6 +1,8 @@
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { Colors } from "../../styles/colors";
 
 const rankings = [
   {
@@ -10,8 +12,8 @@ const rankings = [
     rating: 9.6,
     review: "Yea Mate, This plays rocked my nuts.",
     users: "@habeeb @jordan @morgan",
-    image: "https://via.placeholder.com/80",
-    profilePic: "https://via.placeholder.com/30",
+    image: require("../../assets/images/hidenseek.png"),
+    profilePic: require("../../assets/images/TempProfilePic.png"),
   },
   {
     id: 2,
@@ -20,8 +22,8 @@ const rankings = [
     rating: 7.8,
     review: "Yea Mate, This plays tickled my nuts.",
     users: "@habeeb",
-    image: "https://via.placeholder.com/80",
-    profilePic: "https://via.placeholder.com/30",
+    image: require("../../assets/images/rave.jpg"),
+    profilePic: require("../../assets/images/TempProfilePic.png"),
   },
   {
     id: 3,
@@ -30,111 +32,109 @@ const rankings = [
     rating: 5.4,
     review: "Yea Mate, This plays was lukewarm on my nuts.",
     users: "@habeeb",
-    image: "https://via.placeholder.com/80",
-    profilePic: "https://via.placeholder.com/30",
+    image: require("../../assets/images/rave.jpg"),
+    profilePic: require("../../assets/images/TempProfilePic.png"),
   },
   {
     id: 4,
-    name: "Lucky’s",
+    name: "Lucky's",
     tags: ["Bar", "Rock"],
     rating: 3.6,
     review: "Yea Mate, This plays was pouring a bucket of ice on my nuts after a day's work in the Tundra.",
     users: "@habeeb",
-    image: "@/assets/images/hidenseek.png",
-    profilePic: "@/assets/images/hidenseek.png",
+    image: require("../../assets/images/hidenseek.png"),
+    profilePic: require("../../assets/images/TempProfilePic.png"),
   },
 ];
 
-const MyNights: React.FC = () => {
+export default function MyNights() {
   const router = useRouter();
   const [dropdownVisible, setDropdownVisible] = useState(false);
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.mainContainer}>
       {/* Header Section */}
       <View style={styles.headerContainer}>
         <Text style={styles.header}>ClubRank</Text>
-        <Image source={{ uri: "https://via.placeholder.com/60" }} style={styles.profilePic} />
       </View>
 
-      {/* Centered Title with Dropdown */}
+      {/* Centered Title with Dropdown and Profile Pic */}
       <View style={styles.titleContainer}>
-        <TouchableOpacity onPress={() => setDropdownVisible(!dropdownVisible)} style={styles.dropdownButton}>
-          <Text style={styles.headerText}>My Nights ⌄</Text>
-        </TouchableOpacity>
+        <View style={styles.titleRow}>
+          <Image 
+            source={require("../../assets/images/TempProfilePic.png")} 
+            style={styles.profilePic} 
+            defaultSource={require("../../assets/images/TempProfilePic.png")}
+          />
+          <TouchableOpacity onPress={() => setDropdownVisible(!dropdownVisible)} style={styles.dropdownButton}>
+            <Text style={styles.headerText}>My Nights ⌄</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
-{/* Dropdown Menu */}
-{dropdownVisible && (
-  <View style={styles.dropdownMenu}>
-    <TouchableOpacity
-      onPress={() => {
-        setDropdownVisible(false);
-        router.push("/expanded-tabs/Drafts"); // Navigate to Drafts page
-      }}
-    >
-      <Text style={styles.dropdownItem}>Drafts</Text>
-    </TouchableOpacity>
-    
-    <TouchableOpacity
-      onPress={() => {
-        setDropdownVisible(false);
-        router.push("/expanded-tabs/Futurespots"); // Navigate to FutureSpots
-      }}
-    >
-      <Text style={styles.dropdownItem}>FutureSpots</Text>
-    </TouchableOpacity>
-  </View>
-)}
-
+      {/* Dropdown Menu */}
+      {dropdownVisible && (
+        <View style={styles.dropdownMenu}>
+          <TouchableOpacity onPress={() => router.push("/expanded-tabs/Drafts")}>
+            <Text style={styles.dropdownItem}>Drafts</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push("/expanded-tabs/Futurespots")}>
+            <Text style={styles.dropdownItem}>FutureSpots</Text>
+          </TouchableOpacity>
+        </View>
+      )}
 
       {/* Category Tabs */}
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryScroll}>
         {["All Venues", "Bars", "Clubs", "Raves", "Jazz"].map((category, index) => (
-          <TouchableOpacity key={index} style={styles.categoryButton}>
-            <Text style={[styles.categoryText, index === 0 && styles.activeCategory]}>{category}</Text>
+          <TouchableOpacity key={index} style={[styles.categoryButton, index === 0 && styles.activeCategory]}>
+            <Text style={styles.categoryText}>{category}</Text>
           </TouchableOpacity>
         ))}
       </ScrollView>
 
       {/* Your Rankings Title */}
-      <Text style={styles.sectionTitle}>Your Rankings</Text>
+      <Text style={styles.rankingsTitle}>Your Rankings</Text>
 
-      {/* Rankings List */}
-      {rankings.map((venue) => (
-        <View key={venue.id} style={styles.venueCard}>
-          <Image source={{ uri: venue.image }} style={styles.venueImage} />
-          <View style={styles.venueInfo}>
-            <Text style={styles.venueName}>{venue.name}</Text>
-            <View style={styles.tagContainer}>
-              {venue.tags.map((tag) => (
-                <Text key={tag} style={styles.tag}>{tag}</Text>
-              ))}
+      {/* All Venues Scrollable */}
+      <ScrollView style={styles.rankingsContainer}>
+        {rankings.map((venue) => (
+          <View key={venue.id} style={styles.venueCard}>
+            <Image source={venue.image} style={styles.venueImage} />
+            <View style={styles.venueInfo}>
+              <View style={styles.venueHeader}>
+                <Text style={styles.venueName}>{venue.name}</Text>
+                <View style={styles.tagContainer}>
+                  {venue.tags.map((tag) => (
+                    <Text key={tag} style={styles.tag}>{tag}</Text>
+                  ))}
+                </View>
+              </View>
+              <View style={styles.userReview}>
+                <Image source={venue.profilePic} style={styles.reviewProfilePic} />
+                <Text style={styles.reviewText}>{venue.review}</Text>
+              </View>
+              <Text style={styles.userTags}>{venue.users}</Text>
+              
+              {/* Rating & Icons */}
+              <View style={styles.ratingContainer}>
+                <Text style={[styles.rating, getRatingStyle(venue.rating)]}>{venue.rating}</Text>
+                <View style={styles.iconContainer}>
+                  <TouchableOpacity>
+                    <Text style={styles.icon}>✎</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity>
+                    <Text style={styles.icon}>🗑</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
             </View>
-            <View style={styles.userReview}>
-              <Image source={{ uri: venue.profilePic }} style={styles.reviewProfilePic} />
-              <Text style={styles.reviewText}>{venue.review}</Text>
-            </View>
-            <Text style={styles.userTags}>{venue.users}</Text>
           </View>
-
-          {/* Rating & Icons */}
-          <View style={styles.ratingContainer}>
-            <Text style={[styles.rating, getRatingStyle(venue.rating)]}>{venue.rating}</Text>
-            <View style={styles.iconContainer}>
-              <TouchableOpacity>
-                <Text style={styles.icon}>✎</Text>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Text style={styles.icon}>🗑</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      ))}
-    </ScrollView>
+        ))}
+      </ScrollView>
+    </View>
   );
-};
+}
 
 // Function to color rating based on value
 const getRatingStyle = (rating: number) => {
@@ -143,56 +143,60 @@ const getRatingStyle = (rating: number) => {
   return { backgroundColor: "#F44336" }; // Red
 };
 
-export default MyNights;
-
-// Styles
 const styles = StyleSheet.create({
-  container: {
+  mainContainer: {
     backgroundColor: "#FFF",
-    paddingHorizontal: 15,
     flex: 1,
   },
-
-  // Header Section
   headerContainer: {
-    alignItems: "center", // Center content horizontally
+    alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 40, // Adjust padding to bring it lower
+    paddingVertical: 20,
+    paddingTop: 60,
     backgroundColor: "#fff",
   },
   header: {
     fontSize: 28,
     fontWeight: "bold",
     textAlign: "center",
-    marginBottom: -80, // Move closer to "My Nights"
+  },
+  titleContainer: {
+    paddingVertical: 15,
+    backgroundColor: "#fff",
+  },
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+  },
+  rankingsTitle: {
+    fontSize: 22,
+    fontWeight: "bold",
+    marginTop: 5,
+    marginBottom: 10,
+    paddingHorizontal: 15,
+  },
+  rankingsContainer: {
+    paddingHorizontal: 15,
   },
   profilePic: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    marginTop: 10, // Adjust space between "ClubRank" and the profile picture
-  },
-
-  // Centered Title with Dropdown
-  titleContainer: {
-    alignItems: "center",
-    paddingVertical: 10,
-    marginTop: -20, // Adjust space between "ClubRank" and "My Nights"
+    width: 40,
+    height: 40,
+    borderRadius: 20,
   },
   headerText: {
     fontSize: 24,
     fontWeight: "bold",
     textAlign: "center",
   },
-
   dropdownButton: {
     paddingHorizontal: 10,
     paddingVertical: 5,
   },
-
   dropdownMenu: {
     position: "absolute",
-    top: 90, // Adjust dropdown position
+    top: 90,
     alignSelf: "center",
     backgroundColor: "#fff",
     borderRadius: 8,
@@ -204,7 +208,6 @@ const styles = StyleSheet.create({
     width: 160,
     zIndex: 1000,
   },
-
   dropdownItem: {
     padding: 12,
     fontSize: 16,
@@ -213,117 +216,111 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#ddd",
   },
-
-  // Category Tabs
   categoryScroll: {
-    marginVertical: 10,
+    marginVertical: 20,
+    paddingHorizontal: 15,
   },
   categoryButton: {
-    paddingVertical: 5,
-    marginTop: 10,
+    paddingVertical: 6,
     paddingHorizontal: 12,
-    borderRadius: 10,
-    backgroundColor: "#E0E0E0",
+    borderRadius: 12,
+    backgroundColor: 'rgba(255, 119, 34, 0.28)',
     marginRight: 8,
+    minWidth: 60,
+    alignItems: 'center',
   },
   categoryText: {
-    fontSize: 14,
-    color: "#555",
+    fontSize: 13,
+    color: '#000',
+    fontWeight: '500',
   },
   activeCategory: {
-    fontWeight: "bold",
-    color: "#E65C4F",
+    backgroundColor: Colors.primary.orange,
   },
-
-  // Rankings Section
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginVertical: 10,
-  },
-
-  // Venue Cards
   venueCard: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#FFF",
-    padding: 12,
-    borderRadius: 10,
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    padding: 15,
     marginBottom: 12,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 8,
   },
   venueImage: {
     width: 80,
-    height: 80,
+    height: 120,
     borderRadius: 10,
+    marginRight: 12,
   },
   venueInfo: {
     flex: 1,
-    paddingHorizontal: 12,
+  },
+  venueHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
   },
   venueName: {
-    fontSize: 16,
-    fontWeight: "bold",
+    fontSize: 18,
+    fontWeight: 'bold',
   },
-
   tagContainer: {
-    flexDirection: "row",
-    marginVertical: 5,
+    flexDirection: 'row',
+    gap: 4,
   },
   tag: {
-    backgroundColor: "#E0E0E0",
-    paddingVertical: 3,
+    backgroundColor: Colors.background.redLight,
     paddingHorizontal: 8,
-    borderRadius: 5,
+    paddingVertical: 4,
+    borderRadius: 12,
     fontSize: 12,
-    marginRight: 5,
+    fontWeight: '500',
   },
-
   userReview: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginVertical: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 8,
   },
   reviewProfilePic: {
-    width: 25,
-    height: 25,
-    borderRadius: 12.5,
-    marginRight: 5,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    marginRight: 8,
   },
   reviewText: {
-    fontSize: 12,
-    color: "#666",
-    flexShrink: 1,
+    fontSize: 14,
+    color: '#666',
+    flex: 1,
   },
   userTags: {
     fontSize: 12,
-    color: "#666",
+    color: '#999',
+    marginBottom: 8,
   },
-
-  // Rating & Icons
   ratingContainer: {
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 'auto',
   },
   rating: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#FFF",
-    borderRadius: 12,
-    paddingVertical: 5,
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#FFF',
     paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
   },
   iconContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginTop: 8,
+    flexDirection: 'row',
+    gap: 12,
   },
   icon: {
-    fontSize: 18,
-    marginHorizontal: 6,
+    fontSize: 20,
+    color: Colors.text.warning,
   },
 });
