@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
   customButton: {
     marginTop: 16,
     padding: 16,
-    backgroundColor: '#007bff',
+    backgroundColor: '#F97316',
     borderRadius: 8,
     alignItems: 'center',
     marginBottom: 16, // Add margin to ensure the button is not cut off
