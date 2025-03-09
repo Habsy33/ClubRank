@@ -1,8 +1,12 @@
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet } from "react-native";
+import { walkthroughable, CopilotStep, CopilotProvider, useCopilot } from "react-native-copilot";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "../../styles/colors";
+
+const WalkthroughTouchable = walkthroughable(TouchableOpacity);
+const WalkthroughView = walkthroughable(View);
 
 const rankings = [
   {
@@ -47,12 +51,55 @@ const rankings = [
   },
 ];
 
-export default function MyNights() {
+function GuidePage2() {
   const router = useRouter();
   const [dropdownVisible, setDropdownVisible] = useState(false);
+  const { start, copilotEvents } = useCopilot();
+  const [isReady, setIsReady] = useState(false);
+
+  useEffect(() => {
+    setIsReady(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isReady) return;
+
+    copilotEvents.on("stepChange", (step) => {
+      console.log("Current step:", step?.name);
+    });
+
+    copilotEvents.on("stop", () => {
+      console.log("Tour ended");
+    });
+
+    const timer = setTimeout(() => {
+      console.log("Starting guide...");
+      start();
+    }, 1500);
+
+    return () => {
+      clearTimeout(timer);
+      copilotEvents.off("stepChange");
+      copilotEvents.off("stop");
+    };
+  }, [isReady]);
 
   return (
     <View style={styles.mainContainer}>
+      {/* Navigation Button */}
+      <CopilotStep
+        text="Continue to the next page"
+        order={6}
+        name="next_page"
+      >
+        <WalkthroughTouchable 
+          style={styles.backButton}
+          onPress={() => router.push("/guidepage_3")}
+        >
+          <Ionicons name="arrow-forward" size={24} color="#000" />
+        </WalkthroughTouchable>
+      </CopilotStep>
+
       {/* Header Section */}
       <View style={styles.headerContainer}>
         <Text style={styles.header}>ClubRank</Text>
@@ -66,30 +113,55 @@ export default function MyNights() {
             style={styles.profilePic} 
             defaultSource={require("../../assets/images/TempProfilePic.png")}
           />
-          <TouchableOpacity onPress={() => setDropdownVisible(!dropdownVisible)} style={styles.dropdownButton}>
-            <Text style={styles.headerText}>My Nights ⌄</Text>
-          </TouchableOpacity>
+          <CopilotStep
+            text="Rate and Rank Nights - bars appear from best to worst"
+            order={1}
+            name="my_nights_title"
+          >
+            <WalkthroughTouchable onPress={() => setDropdownVisible(!dropdownVisible)} style={styles.dropdownButton}>
+              <Text style={styles.headerText}>My Nights ⌄</Text>
+            </WalkthroughTouchable>
+          </CopilotStep>
         </View>
       </View>
 
       {/* Dropdown Menu */}
       {dropdownVisible && (
-        <View style={styles.dropdownMenu}>
-          <TouchableOpacity onPress={() => router.push("/expanded-tabs/Drafts")}>
-            <Text style={styles.dropdownItem}>Drafts</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => router.push("/expanded-tabs/Futurespots")}>
-            <Text style={styles.dropdownItem}>FutureSpots</Text>
-          </TouchableOpacity>
-        </View>
+        <CopilotStep
+          text="Navigate to your future spots and drafts"
+          order={5}
+          name="dropdown_menu"
+        >
+          <WalkthroughView style={styles.dropdownMenu}>
+            <TouchableOpacity onPress={() => router.push("/expanded-tabs/Drafts")}>
+              <Text style={styles.dropdownItem}>Drafts</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => router.push("/expanded-tabs/Futurespots")}>
+              <Text style={styles.dropdownItem}>FutureSpots</Text>
+            </TouchableOpacity>
+          </WalkthroughView>
+        </CopilotStep>
       )}
 
       {/* Category Tabs */}
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryScroll}>
         {["All Venues", "Bars", "Clubs", "Raves", "Jazz"].map((category, index) => (
-          <TouchableOpacity key={index} style={[styles.categoryButton, index === 0 && styles.activeCategory]}>
-            <Text style={styles.categoryText}>{category}</Text>
-          </TouchableOpacity>
+          category === "Bars" ? (
+            <CopilotStep
+              key={index}
+              text="Filter by Category"
+              order={2}
+              name="category_filter"
+            >
+              <WalkthroughTouchable style={[styles.categoryButton, index === 0 && styles.activeCategory]}>
+                <Text style={styles.categoryText}>{category}</Text>
+              </WalkthroughTouchable>
+            </CopilotStep>
+          ) : (
+            <TouchableOpacity key={index} style={[styles.categoryButton, index === 0 && styles.activeCategory]}>
+              <Text style={styles.categoryText}>{category}</Text>
+            </TouchableOpacity>
+          )
         ))}
       </ScrollView>
 
@@ -98,7 +170,7 @@ export default function MyNights() {
 
       {/* All Venues Scrollable */}
       <ScrollView style={styles.rankingsContainer}>
-        {rankings.map((venue) => (
+        {rankings.map((venue, index) => (
           <View key={venue.id} style={styles.venueCard}>
             <Image source={venue.image} style={styles.venueImage} />
             <View style={styles.venueInfo}>
@@ -120,12 +192,37 @@ export default function MyNights() {
               <View style={styles.ratingContainer}>
                 <Text style={[styles.rating, getRatingStyle(venue.rating)]}>{venue.rating}</Text>
                 <View style={styles.iconContainer}>
-                  <TouchableOpacity>
-                    <Text style={styles.icon}>✎</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity>
-                    <Text style={styles.icon}>🗑</Text>
-                  </TouchableOpacity>
+                  {index === 0 ? (
+                    <>
+                      <CopilotStep
+                        text="Edit review"
+                        order={3}
+                        name="edit_icon"
+                      >
+                        <WalkthroughTouchable>
+                          <Text style={styles.icon}>✎</Text>
+                        </WalkthroughTouchable>
+                      </CopilotStep>
+                      <CopilotStep
+                        text="Remove from list"
+                        order={4}
+                        name="delete_icon"
+                      >
+                        <WalkthroughTouchable>
+                          <Text style={styles.icon}>🗑</Text>
+                        </WalkthroughTouchable>
+                      </CopilotStep>
+                    </>
+                  ) : (
+                    <>
+                      <TouchableOpacity>
+                        <Text style={styles.icon}>✎</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity>
+                        <Text style={styles.icon}>🗑</Text>
+                      </TouchableOpacity>
+                    </>
+                  )}
                 </View>
               </View>
             </View>
@@ -143,10 +240,47 @@ const getRatingStyle = (rating: number) => {
   return { backgroundColor: "#F44336" }; // Red
 };
 
+// Wrap with CopilotProvider
+export default function WrappedGuidePage2() {
+  return (
+    <CopilotProvider 
+      overlay="view"
+      animated={true}
+      tooltipStyle={{
+        backgroundColor: 'rgba(255, 236, 217, 0.98)',
+        padding: 15,
+        borderRadius: 12,
+      }}
+      backdropColor="rgba(50, 50, 50, 0.9)"
+      stepNumberComponent={() => null}
+      labels={{
+        next: "Next →",
+        skip: "Skip",
+        finish: "Got it! 🎉"
+      }}
+      androidStatusBarVisible={false}
+      stopOnOutsideClick={true}
+    >
+      <GuidePage2 />
+    </CopilotProvider>
+  );
+}
+
 const styles = StyleSheet.create({
   mainContainer: {
     backgroundColor: "#FFF",
     flex: 1,
+  },
+  container: {
+    backgroundColor: "#FFF",
+    flex: 1,
+  },
+  backButton: {
+    position: 'absolute',
+    top: 50,
+    left: 15,
+    zIndex: 10,
+    padding: 10,
   },
   headerContainer: {
     alignItems: "center",
