@@ -70,6 +70,15 @@ export default function RootLayout() {
           options={{ headerShown: false }} 
         />
 
+        <Stack.Screen
+          name="expanded-tabs/localsOnly"
+          options={{ headerShown: false }} 
+        />
+
+        <Stack.Screen
+          name="expanded-tabs/friendsRec"
+          options={{ headerShown: false }} 
+        />
         []
         <Stack.Screen name="+not-found" />
       </Stack>
