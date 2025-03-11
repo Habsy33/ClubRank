@@ -59,7 +59,8 @@ const SignInScreen: React.FC = () => {
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
-            placeholder="Enter your email..."
+            placeholder="Enter your email or username..."
+            placeholderTextColor="#999" // Add placeholder text color
             keyboardType="email-address"
             autoCapitalize="none"
             onChangeText={setEmail}
@@ -71,7 +72,8 @@ const SignInScreen: React.FC = () => {
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
-            placeholder="Password"
+            placeholder="Enter your password..."
+            placeholderTextColor="#999" // Add placeholder text color
             secureTextEntry
             autoCapitalize="none"
             onChangeText={setPassword}
@@ -157,10 +159,11 @@ const styles = StyleSheet.create({
   input: {
     width: "100%",
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: "#CCCCCC",
     borderRadius: 8,
     padding: 10,
     fontSize: 14,
+    color: "#333",
   },
   errorText: {
     color: "red",

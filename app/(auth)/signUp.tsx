@@ -8,6 +8,7 @@ import {
   StyleSheet,
   ImageBackground,
   Dimensions,
+  ScrollView,
 } from "react-native";
 import { Ionicons, FontAwesome } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
@@ -91,119 +92,120 @@ const SignUp: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header with Background Image */}
-      <ImageBackground
-        source={{ uri: HEADER_IMAGE_URI }}
-        style={styles.headerImage}
-        resizeMode="cover"
-      >
         <View style={styles.headerOverlay}>
-          <Text style={styles.headerTitle}>Sign Up For Free</Text>
+          <Text style={styles.headerTitle}>ClubRank</Text>
           <Text style={styles.headerSubtitle}>
-            Quickly make your account in 1 minute
+          Sign Up For Free
           </Text>
         </View>
-      </ImageBackground>
 
-      {/* Form Container */}
-      <View style={styles.formContainer}>
-        {/* Full Name Field */}
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Full Name</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="John Doe"
-            autoCapitalize="words"
-            onChangeText={setFullName}
-            value={fullName}
-          />
-        </View>
-
-        {/* Username Field */}
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Username</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Your username"
-            autoCapitalize="none"
-            onChangeText={setUsername}
-            value={username}
-          />
-        </View>
-
-        {/* Email Field */}
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Email Address</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="elementary221b@gmail.com"
-            keyboardType="email-address"
-            autoCapitalize="none"
-            onChangeText={setEmail}
-            value={email}
-          />
-        </View>
-
-        {/* Password Field */}
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Password</Text>
-          <View style={styles.passwordRow}>
+      {/* Scrollable Form Container */}
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <View style={styles.innerContainer}>
+        <Text style={styles.title}>Sign Up</Text>
+          {/* Full Name Field */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Full Name</Text>
             <TextInput
-              style={[styles.input, styles.passwordInput]}
-              placeholder="**********"
-              secureTextEntry={!showPassword}
-              autoCapitalize="none"
-              onChangeText={setPassword}
-              value={password}
+              style={styles.input}
+              placeholder="Enter your full name..."
+              placeholderTextColor="#999"
+              autoCapitalize="words"
+              onChangeText={setFullName}
+              value={fullName}
             />
-            <TouchableOpacity
-              style={styles.eyeButton}
-              onPress={() => setShowPassword(!showPassword)}
-            >
-              <Text style={styles.eyeButtonText}>{showPassword ? "🙈" : "👁"}</Text>
-            </TouchableOpacity>
           </View>
-        </View>
 
-        {/* Confirm Password Field */}
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>Confirm Password</Text>
-          <View style={styles.passwordRow}>
+          {/* Username Field */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Username</Text>
             <TextInput
-              style={[styles.input, styles.passwordInput]}
-              placeholder="**********"
-              secureTextEntry={!showConfirmPassword}
+              style={styles.input}
+              placeholder="Enter your username..."
+              placeholderTextColor="#999"
               autoCapitalize="none"
-              onChangeText={setConfirmPassword}
-              value={confirmPassword}
+              onChangeText={setUsername}
+              value={username}
             />
-            <TouchableOpacity
-              style={styles.eyeButton}
-              onPress={() => setShowConfirmPassword(!showConfirmPassword)}
-            >
-              <Text style={styles.eyeButtonText}>
-                {showConfirmPassword ? "🙈" : "👁"}
-              </Text>
-            </TouchableOpacity>
           </View>
-        </View>
 
-        {/* Error Message */}
-        {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
+          {/* Email Field */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Email Address</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter your email..."
+              placeholderTextColor="#999"
+              keyboardType="email-address"
+              autoCapitalize="none"
+              onChangeText={setEmail}
+              value={email}
+            />
+          </View>
 
-        {/* Sign Up Button */}
-        <TouchableOpacity style={styles.signUpButton} onPress={handleSignUp}>
-          <Text style={styles.signUpButtonText}>Sign Up</Text>
-        </TouchableOpacity>
+          {/* Password Field */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Password</Text>
+            <View style={styles.passwordRow}>
+              <TextInput
+                style={[styles.input, styles.passwordInput]}
+                placeholder="Enter your password..."
+                placeholderTextColor="#999"
+                secureTextEntry={!showPassword}
+                autoCapitalize="none"
+                onChangeText={setPassword}
+                value={password}
+              />
+              <TouchableOpacity
+                style={styles.eyeButton}
+                onPress={() => setShowPassword(!showPassword)}
+              >
+                <Text style={styles.eyeButtonText}>{showPassword ? "🙈" : "👁"}</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
 
-        {/* Footer: Already have an account? Sign In */}
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>Already have an account?</Text>
-          <TouchableOpacity onPress={() => router.push("/signIn")}>
-            <Text style={styles.signInLink}> Sign In.</Text>
+          {/* Confirm Password Field */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Confirm Password</Text>
+            <View style={styles.passwordRow}>
+              <TextInput
+                style={[styles.input, styles.passwordInput]}
+                placeholder="Confirm your password..."
+                placeholderTextColor="#999"
+                secureTextEntry={!showConfirmPassword}
+                autoCapitalize="none"
+                onChangeText={setConfirmPassword}
+                value={confirmPassword}
+              />
+              <TouchableOpacity
+                style={styles.eyeButton}
+                onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+              >
+                <Text style={styles.eyeButtonText}>
+                  {showConfirmPassword ? "🙈" : "👁"}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* Error Message */}
+          {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
+
+          {/* Sign Up Button */}
+          <TouchableOpacity style={styles.submitButton} onPress={handleSignUp}>
+            <Text style={styles.submitButtonText}>Sign Up</Text>
           </TouchableOpacity>
+
+          {/* Footer: Already have an account? Sign In */}
+          <View style={styles.footer}>
+            <Text style={styles.footerText}>Already have an account?</Text>
+            <TouchableOpacity onPress={() => router.push("/signIn")}>
+              <Text style={styles.footerLink}> Sign In.</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -211,20 +213,16 @@ const SignUp: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#FDE7E8", // Light pink background
   },
-  headerImage: {
-    width: "100%",
-    height: 250,
-    justifyContent: "flex-end",
-  },
+
   headerOverlay: {
-    backgroundColor: "rgba(0,0,0,0.3)",
-    paddingVertical: 20,
+    top: 30,
     paddingHorizontal: 15,
+    alignItems: 'center',
   },
   headerTitle: {
-    fontSize: 24,
+    fontSize: 30,
     fontWeight: "bold",
     color: "#FFFFFF",
     marginBottom: 5,
@@ -233,11 +231,30 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#FFFFFF",
   },
-  formContainer: {
-    paddingHorizontal: 20,
-    paddingVertical: 20,
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: "center",
   },
+  innerContainer: {
+    width: "80%",
+    borderWidth: 1,
+    borderColor: "#000",
+    borderRadius: 10,
+    padding: 20,
+    backgroundColor: "#FFF",
+    alignSelf: "center",
+    marginVertical: 20,
+  },
+
+  title: {
+    fontSize: 32,
+    fontWeight: "bold",
+    marginBottom: 5,
+    textAlign: "center",
+  },
+  
   inputContainer: {
+    width: "100%",
     marginBottom: 15,
   },
   label: {
@@ -246,6 +263,7 @@ const styles = StyleSheet.create({
     color: "#333",
   },
   input: {
+    width: "100%",
     borderWidth: 1,
     borderColor: "#CCCCCC",
     borderRadius: 8,
@@ -271,16 +289,18 @@ const styles = StyleSheet.create({
     color: "red",
     fontSize: 12,
     marginBottom: 10,
+    textAlign: "center",
   },
-  signUpButton: {
+  submitButton: {
+    width: "100%",
     backgroundColor: "#FF5E62",
     borderRadius: 8,
     paddingVertical: 14,
     alignItems: "center",
-    marginTop: 10,
+    marginVertical: 10,
   },
-  signUpButtonText: {
-    color: "#FFFFFF",
+  submitButtonText: {
+    color: "#FFF",
     fontWeight: "600",
     fontSize: 16,
   },
@@ -292,7 +312,7 @@ const styles = StyleSheet.create({
   footerText: {
     color: "#333",
   },
-  signInLink: {
+  footerLink: {
     color: "#FF5E62",
     fontWeight: "600",
   },
