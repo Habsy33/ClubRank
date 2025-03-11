@@ -79,6 +79,17 @@ export default function RootLayout() {
           name="expanded-tabs/friendsRec"
           options={{ headerShown: false }} 
         />
+
+        <Stack.Screen
+          name="(auth)/signIn"
+          options={{ headerShown: false }} 
+        />
+
+        <Stack.Screen
+          name="(auth)/signUp"
+          options={{ headerShown: false }} 
+        />
+
         []
         <Stack.Screen name="+not-found" />
       </Stack>

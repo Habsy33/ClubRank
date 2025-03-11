@@ -7,18 +7,44 @@ import {
   StyleSheet,
   SafeAreaView,
 } from "react-native";
-import { Redirect } from 'expo-router';
-import { useRouter } from 'expo-router';
+import { useRouter } from "expo-router";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "@/firebaseConfig";
 
 const SignInScreen: React.FC = () => {
-
   const router = useRouter();
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const handleSubmit = () => {
-    // Handle your sign-in logic here
-    console.log("Signing in with:", { username, password });
+  const handleSubmit = async () => {
+    try {
+      if (!email || !password) {
+        setErrorMessage("Please fill in all fields.");
+        return;
+      }
+
+      // Sign in with Firebase Authentication
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      console.log("User signed in:", user);
+
+      // Redirect to the main app screen
+      router.push("/(tabs)");
+    } catch (error: any) {
+      console.error("Error signing in:", error);
+
+      if (error.code === "auth/invalid-email") {
+        setErrorMessage("Please enter a valid email address.");
+      } else if (error.code === "auth/user-not-found") {
+        setErrorMessage("No user found with this email.");
+      } else if (error.code === "auth/wrong-password") {
+        setErrorMessage("Incorrect password.");
+      } else {
+        setErrorMessage(error.message || "An unexpected error occurred.");
+      }
+    }
   };
 
   return (
@@ -29,14 +55,15 @@ const SignInScreen: React.FC = () => {
         <Text style={styles.title}>Login</Text>
         <Text style={styles.subtitle}>Rate venues, share with friends :)</Text>
 
-        {/* Username / Email Input */}
+        {/* Email Input */}
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
-            placeholder="type username or email..."
+            placeholder="Enter your email..."
+            keyboardType="email-address"
             autoCapitalize="none"
-            onChangeText={setUsername}
-            value={username}
+            onChangeText={setEmail}
+            value={email}
           />
         </View>
 
@@ -51,6 +78,9 @@ const SignInScreen: React.FC = () => {
             value={password}
           />
         </View>
+
+        {/* Error Message */}
+        {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
 
         {/* Submit Button */}
         <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
@@ -85,7 +115,7 @@ const SignInScreen: React.FC = () => {
         {/* Footer: Already have an account? Sign In. */}
         <View style={styles.footer}>
           <Text style={styles.footerText}>Do not have an account?</Text>
-          <TouchableOpacity onPress={() => router.push('../(tabs)/signUp')}>
+          <TouchableOpacity onPress={() => router.push("/signUp")}>
             <Text style={styles.footerLink}> Sign Up.</Text>
           </TouchableOpacity>
         </View>
@@ -131,6 +161,12 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 10,
     fontSize: 14,
+  },
+  errorText: {
+    color: "red",
+    fontSize: 12,
+    marginBottom: 10,
+    textAlign: "center",
   },
   submitButton: {
     width: "100%",

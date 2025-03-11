@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
-import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '@/firebaseConfig';
 
 interface Review {
   id: string;
@@ -18,6 +20,33 @@ interface Review {
 export default function HomeScreen() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState('All');
+  const [loading, setLoading] = useState(true); // Loading state while checking auth status
+
+  // Check authentication state on app launch
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is signed in, proceed to the home screen
+        setLoading(false);
+      } else {
+        // No user is signed in, redirect to the sign-in screen
+        router.replace('/(auth)/signIn');
+      }
+    });
+
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
+  }, []);
+
+  // Show a loading indicator while checking auth status
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#FF5733" />
+      </View>
+    );
+  }
+
   const reviews: Review[] = [
     {
       id: '1',
@@ -92,38 +121,38 @@ export default function HomeScreen() {
   };
 
   const renderReview = ({ item }: { item: Review }) => (
-  <TouchableOpacity onPress={() =>  router.push('/expanded-tabs/venueDetails')}>
-    <View style={styles.card}>
-      <Image source={item.image} style={styles.largeImage} />
-      <View style={styles.cardContent}>
-        <View style={styles.rowHeader}>
-          <Text style={styles.venueName}>{item.venue}</Text>
-          <Text style={styles.venueDistance}>{item.distance}</Text>
-          <Text style={styles.venueType}>{item.type}</Text>
-          <TouchableOpacity>
-            <Ionicons name="ellipsis-horizontal" size={20} color="gray" />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.userInfo}>
-          <Ionicons name="person-circle" size={35} color="gray" />
-          <Text style={styles.visited}>{item.visited}</Text>
-        </View>
-        <Text style={styles.review}>{truncateReview(item.review, 50)}</Text>
-        <View style={styles.rowBottom}>
-          <View style={styles.ratingRow}>
-            <Ionicons name="star" size={20} color="gold" />
-            <Text style={styles.rating}>{item.rating}</Text>
-            <Text style={styles.reviewCount}>({item.reviewCount} Reviews)</Text>
+    <TouchableOpacity onPress={() => router.push('/expanded-tabs/venueDetails')}>
+      <View style={styles.card}>
+        <Image source={item.image} style={styles.largeImage} />
+        <View style={styles.cardContent}>
+          <View style={styles.rowHeader}>
+            <Text style={styles.venueName}>{item.venue}</Text>
+            <Text style={styles.venueDistance}>{item.distance}</Text>
+            <Text style={styles.venueType}>{item.type}</Text>
+            <TouchableOpacity>
+              <Ionicons name="ellipsis-horizontal" size={20} color="gray" />
+            </TouchableOpacity>
           </View>
-          <View style={styles.actions}>
-            <TouchableOpacity><Ionicons name="star-outline" size={20} color="black" /></TouchableOpacity>
-            <TouchableOpacity onPress={() =>  router.push('/expanded-tabs/rateTheJoint1')}><Ionicons name="add-circle-outline" size={20} color="black"/></TouchableOpacity>
-            <TouchableOpacity><Ionicons name="bookmark-outline" size={20} color="black" /></TouchableOpacity>
+          <View style={styles.userInfo}>
+            <Ionicons name="person-circle" size={35} color="gray" />
+            <Text style={styles.visited}>{item.visited}</Text>
+          </View>
+          <Text style={styles.review}>{truncateReview(item.review, 50)}</Text>
+          <View style={styles.rowBottom}>
+            <View style={styles.ratingRow}>
+              <Ionicons name="star" size={20} color="gold" />
+              <Text style={styles.rating}>{item.rating}</Text>
+              <Text style={styles.reviewCount}>({item.reviewCount} Reviews)</Text>
+            </View>
+            <View style={styles.actions}>
+              <TouchableOpacity><Ionicons name="star-outline" size={20} color="black" /></TouchableOpacity>
+              <TouchableOpacity onPress={() => router.push('/expanded-tabs/rateTheJoint1')}><Ionicons name="add-circle-outline" size={20} color="black"/></TouchableOpacity>
+              <TouchableOpacity><Ionicons name="bookmark-outline" size={20} color="black" /></TouchableOpacity>
+            </View>
           </View>
         </View>
       </View>
-    </View>
-  </TouchableOpacity>
+    </TouchableOpacity>
   );
 
   const handleTabPress = (tab: string) => {
@@ -214,4 +243,5 @@ const styles = StyleSheet.create({
   venueDistance: { marginLeft: -10, fontSize: 12, marginRight: -20 },
   rowBottom: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 5 },
   review: { fontSize: 14, marginTop: 5 },
+  loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
 });

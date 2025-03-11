@@ -9,33 +9,84 @@ import {
   ImageBackground,
   Dimensions,
 } from "react-native";
-
-import { Redirect } from 'expo-router';
-import { useRouter } from 'expo-router';
+import { Ionicons, FontAwesome } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth, db, ref, set, get } from "@/firebaseConfig";
 
 const { width } = Dimensions.get("window");
-
-const router = useRouter();
 
 // Replace with your desired header image URL or local require(...) statement
 const HEADER_IMAGE_URI =
   "https://images.unsplash.com/photo-1589987606637-4e92f42f7bef?ixlib=rb-4.0.3&auto=format&fit=crop&w=1050&q=80";
 
-const SignUpScreen: React.FC = () => {
-  // Form state
-  const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
+const SignUp: React.FC = () => {
+  const router = useRouter();
+
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
 
   // Toggles for showing/hiding passwords
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  // Example sign-up handler
-  const handleSignUp = () => {
-    // Validate and submit the form here
-    console.log("Signing up with:", { email, username, password, confirmPassword });
+  const handleSignUp = async () => {
+    try {
+      if (!email || !username || !password || !confirmPassword || !fullName) {
+        setErrorMessage("Please fill in all fields.");
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        setErrorMessage("Passwords do not match.");
+        return;
+      }
+
+      // Check if username is already taken
+      const usernameRef = ref(db, `usernames/${username}`);
+      const snapshot = await get(usernameRef);
+
+      if (snapshot.exists()) {
+        setErrorMessage("Username already taken. Choose another.");
+        return;
+      }
+
+      // Create user in Firebase Authentication
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const userId = userCredential.user.uid;
+
+      // Store user details in Realtime Database
+      const userRef = ref(db, `users/${userId}`);
+      await set(userRef, {
+        fullName,
+        username,
+        email,
+        userId,
+        createdAt: new Date().toISOString(),
+      });
+
+      // Store username to prevent duplicates
+      await set(usernameRef, { userId });
+
+      // Redirect user to another authentication page (e.g., email verification)
+      router.push("/(tabs)");
+    } catch (error: any) {
+      console.error("Error signing up:", error);
+
+      if (error.code === "auth/email-already-in-use") {
+        setErrorMessage("This email is already registered. Try logging in instead.");
+      } else if (error.code === "auth/invalid-email") {
+        setErrorMessage("Please enter a valid email address.");
+      } else if (error.code === "auth/weak-password") {
+        setErrorMessage("Password should be at least 6 characters.");
+      } else {
+        setErrorMessage(error.message || "An unexpected error occurred.");
+      }
+    }
   };
 
   return (
@@ -56,16 +107,15 @@ const SignUpScreen: React.FC = () => {
 
       {/* Form Container */}
       <View style={styles.formContainer}>
-        {/* Email Field */}
+        {/* Full Name Field */}
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>Email Address</Text>
+          <Text style={styles.label}>Full Name</Text>
           <TextInput
             style={styles.input}
-            placeholder="elementary221b@gmail.com"
-            keyboardType="email-address"
-            autoCapitalize="none"
-            onChangeText={setEmail}
-            value={email}
+            placeholder="John Doe"
+            autoCapitalize="words"
+            onChangeText={setFullName}
+            value={fullName}
           />
         </View>
 
@@ -78,6 +128,19 @@ const SignUpScreen: React.FC = () => {
             autoCapitalize="none"
             onChangeText={setUsername}
             value={username}
+          />
+        </View>
+
+        {/* Email Field */}
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Email Address</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="elementary221b@gmail.com"
+            keyboardType="email-address"
+            autoCapitalize="none"
+            onChangeText={setEmail}
+            value={email}
           />
         </View>
 
@@ -125,6 +188,9 @@ const SignUpScreen: React.FC = () => {
           </View>
         </View>
 
+        {/* Error Message */}
+        {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
+
         {/* Sign Up Button */}
         <TouchableOpacity style={styles.signUpButton} onPress={handleSignUp}>
           <Text style={styles.signUpButtonText}>Sign Up</Text>
@@ -133,7 +199,7 @@ const SignUpScreen: React.FC = () => {
         {/* Footer: Already have an account? Sign In */}
         <View style={styles.footer}>
           <Text style={styles.footerText}>Already have an account?</Text>
-          <TouchableOpacity onPress={() => router.push('../(tabs)/signIn')}>
+          <TouchableOpacity onPress={() => router.push("/signIn")}>
             <Text style={styles.signInLink}> Sign In.</Text>
           </TouchableOpacity>
         </View>
@@ -141,8 +207,6 @@ const SignUpScreen: React.FC = () => {
     </SafeAreaView>
   );
 };
-
-export default SignUpScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -203,6 +267,11 @@ const styles = StyleSheet.create({
   eyeButtonText: {
     fontSize: 16,
   },
+  errorText: {
+    color: "red",
+    fontSize: 12,
+    marginBottom: 10,
+  },
   signUpButton: {
     backgroundColor: "#FF5E62",
     borderRadius: 8,
@@ -228,3 +297,5 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
 });
+
+export default SignUp;
