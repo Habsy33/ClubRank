@@ -40,7 +40,7 @@ const rankings = [
     name: "Lucky's",
     tags: ["Bar", "Rock"],
     rating: 3.6,
-    review: "Yea Mate, This plays was pouring a bucket of ice on my nuts after a day's work in the Tundra.",
+    review: "Yea Mate, This place was pouring a bucket of ice on my nuts after a day's work in the Tundra.",
     users: "@habeeb",
     image: require("../../assets/images/hidenseek.png"),
     profilePic: require("../../assets/images/TempProfilePic.png"),
@@ -173,8 +173,8 @@ const styles = StyleSheet.create({
   rankingsTitle: {
     fontSize: 22,
     fontWeight: "bold",
-    marginTop: 5,
-    marginBottom: 10,
+    marginTop: -10,
+    marginBottom: 5,
     paddingHorizontal: 15,
   },
   rankingsContainer: {
@@ -219,21 +219,25 @@ const styles = StyleSheet.create({
   categoryScroll: {
     marginVertical: 20,
     paddingHorizontal: 15,
-  },
-  categoryButton: {
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 12,
+    height: 60, // Add fixed height to prevent cutting
+},
+categoryButton: {
+    paddingVertical: 10, // Increased vertical padding
+    paddingHorizontal: 16, // Slightly increased horizontal padding
+    borderRadius: 20, // More rounded corners for better appearance
     backgroundColor: 'rgba(255, 119, 34, 0.28)',
-    marginRight: 8,
-    minWidth: 60,
+    marginRight: 10, // Slightly increased margin between buttons
+    height: 36, // Fixed height for consistency
+    justifyContent: 'center', // Center text vertically
     alignItems: 'center',
-  },
-  categoryText: {
-    fontSize: 13,
+},
+categoryText: {
+    fontSize: 14,
     color: '#000',
     fontWeight: '500',
-  },
+    includeFontPadding: false, // This prevents extra padding around text
+    textAlignVertical: 'center', // Ensures text is properly centered
+},
   activeCategory: {
     backgroundColor: Colors.primary.orange,
   },
