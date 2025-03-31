@@ -1,9 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, ActivityIndicator, Modal, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '@/firebaseConfig';
+
+// All available categories
+const allCategories = [
+  'Nightclub', 'Dive Bar', 'Rooftop Bar', 'Speakeasy', 'Sports Bar', 'Cocktail Lounge', 'Pool Bar',
+  'Karaoke Bar', 'Irish Pub', 'Wine Bar', 'Tiki Bar', 'Gastropub', 'Strip Club', 'Hookah Lounge', 'Dance Club', 'Rave Venue',
+  'Jazz', 'Blues', 'EDM', 'Country', 'Hip-Hop', 'Techno', 'Live Band', 'Acoustic', 'Reggae', 'Classic Rock', 'House', 'Latin', 'Punk Rock', 'Pop Hits', 'Indie',
+  'Crowded', 'Intimate', 'Classy', 'Grimy', 'Creepy', 'Tourist Trap', 'Chill', 'Trendy', 'Locals-Only', 'Dance Floor', 'Loud', 'Romantic', 'Retro', 'Biker-Friendly', 'College Hangout'
+];
 
 interface Review {
   id: string;
@@ -20,25 +28,18 @@ interface Review {
 export default function HomeScreen() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState('All');
-  const [loading, setLoading] = useState(true); // Loading state while checking auth status
+  const [loading, setLoading] = useState(true);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState('');
 
-  // Check authentication state on app launch
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        // User is signed in, proceed to the home screen
-        setLoading(false);
-      } else {
-        // No user is signed in, redirect to the sign-in screen
-        router.replace('/(auth)/signIn');
-      }
+      if (user) setLoading(false);
+      else router.replace('/(auth)/signIn');
     });
-
-    // Cleanup subscription on unmount
     return () => unsubscribe();
   }, []);
 
-  // Show a loading indicator while checking auth status
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -46,6 +47,7 @@ export default function HomeScreen() {
       </View>
     );
   }
+
 
   const reviews: Review[] = [
     {
@@ -116,8 +118,13 @@ export default function HomeScreen() {
     },
   ];
 
-  const truncateReview = (text: string, length: number) => {
-    return text.length > length ? text.substring(0, length) + '...' : text;
+  const truncateReview = (text: string, length: number) =>
+    text.length > length ? text.substring(0, length) + '...' : text;
+
+  const getRatingStyle = (rating: number) => {
+    if (rating >= 8) return styles.ratingGreen;
+    if (rating >= 5) return styles.ratingYellow;
+    return styles.ratingRed;
   };
 
   const renderReview = ({ item }: { item: Review }) => (
@@ -139,10 +146,9 @@ export default function HomeScreen() {
           </View>
           <Text style={styles.review}>{truncateReview(item.review, 50)}</Text>
           <View style={styles.rowBottom}>
-            <View style={styles.ratingRow}>
-              <Ionicons name="star" size={20} color="gold" />
-              <Text style={styles.rating}>{item.rating}</Text>
-              <Text style={styles.reviewCount}>({item.reviewCount} Reviews)</Text>
+            <View style={styles.ratingContainer}>
+              <Text style={[styles.rating, getRatingStyle(item.rating)]}>{item.rating}</Text>
+              <Text style={styles.reviews}>({item.reviewCount} Reviews)</Text>
             </View>
             <View style={styles.actions}>
               <TouchableOpacity><Ionicons name="star-outline" size={20} color="black" /></TouchableOpacity>
@@ -157,29 +163,14 @@ export default function HomeScreen() {
 
   const handleTabPress = (tab: string) => {
     setActiveTab(tab);
-    switch (tab) { //Note to self: remove the animation when the tab gets redirected
-      case 'All':
-        router.replace('/');
-        break;
-      case 'Top Reviews':
-        router.replace('/');
-        break;
-      case 'Near You':
-        router.replace('/');
-        break;
-      case 'Friends Going': 
-        router.replace('/expanded-tabs/friendsGoing');
-        break;
-      default:
-        router.replace('/');
-    }
+    router.replace(tab === 'Friends Going' ? '/expanded-tabs/friendsGoing' : '/');
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.header}>ClubRank</Text>
       <Text style={styles.header1}>Nightlife Venue Finder</Text>
-      
+
       <View style={styles.tabs}>
         {['All', 'Top Reviews', 'Near You', 'Friends Going'].map(tab => (
           <TouchableOpacity key={tab} onPress={() => handleTabPress(tab)}>
@@ -187,29 +178,48 @@ export default function HomeScreen() {
           </TouchableOpacity>
         ))}
       </View>
-      
+
       <Text style={styles.subHeader}>Your Friends Reviews</Text>
       <Text style={styles.itemCount}>Total {reviews.length} items</Text>
-      
+
       <View style={styles.filters}>
         {['All', 'Nightclubs', 'Bars', 'Raves'].map(filter => (
           <TouchableOpacity key={filter} style={styles.filterButton}>
             <Text>{filter}</Text>
           </TouchableOpacity>
         ))}
-        <TouchableOpacity><Text style={styles.seeAll}>See All</Text></TouchableOpacity>
+        <TouchableOpacity onPress={() => setModalVisible(true)}>
+          <Text style={styles.seeAll}>See All</Text>
+        </TouchableOpacity>
       </View>
-      
+
       <FlatList
         data={reviews}
         keyExtractor={(item) => item.id}
         renderItem={renderReview}
         contentContainerStyle={styles.listContainer}
       />
-      
+
       <TouchableOpacity style={styles.fab}>
         <Ionicons name="add" size={24} color="white" />
       </TouchableOpacity>
+
+      {/* Modal for All Categories */}
+      <Modal visible={modalVisible} animationType="slide">
+        <View style={{ flex: 1, padding: 20, backgroundColor: 'white' }}>
+          <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 20 }}>Select a Category</Text>
+          <ScrollView>
+            {allCategories.map((cat) => (
+              <TouchableOpacity key={cat} style={{ paddingVertical: 10 }} onPress={() => { setSelectedCategory(cat); setModalVisible(false); }}>
+                <Text style={{ fontSize: 18 }}>{cat}</Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+          <TouchableOpacity onPress={() => setModalVisible(false)} style={{ marginTop: 20 }}>
+            <Text style={{ color: 'red', fontSize: 16 }}>Close</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -233,9 +243,33 @@ const styles = StyleSheet.create({
   venueName: { fontSize: 15, fontWeight: 'bold' },
   userInfo: { flexDirection: 'row', alignItems: 'center', gap: 5, marginBottom: 5 },
   visited: { fontSize: 12, color: 'gray' },
-  ratingRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
-  rating: { fontSize: 16, fontWeight: 'bold' },
-  reviewCount: { fontSize: 14, color: 'gray' },
+  ratingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 'auto',
+  },
+  rating: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#FFF',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  ratingGreen: {
+    backgroundColor: '#4CAF50',
+  },
+  ratingYellow: {
+    backgroundColor: '#FFC107',
+  },
+  ratingRed: {
+    backgroundColor: '#F44336',
+  },
+  reviews: {
+    fontSize: 14,
+    color: '#666',
+    marginLeft: 4,
+  },
   actions: { flexDirection: 'row', gap: 10, marginTop: 5, justifyContent: 'flex-end' },
   fab: { position: 'absolute', bottom: 20, right: 20, backgroundColor: '#FF5733', padding: 15, borderRadius: 30 },
   rowHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },

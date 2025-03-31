@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "../../styles/colors";
@@ -50,15 +50,25 @@ const rankings = [
 export default function MyNights() {
   const router = useRouter();
   const [dropdownVisible, setDropdownVisible] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("All Venues");
+
+  const allTags = useMemo(() => {
+    const tagSet = new Set();
+    rankings.forEach(venue => venue.tags.forEach(tag => tagSet.add(tag)));
+    return ["All Venues", ...Array.from(tagSet)] as string[];
+  }, [rankings]);
+
+  const filteredRankings = useMemo(() => {
+    if (selectedCategory === "All Venues") return rankings;
+    return rankings.filter(venue => venue.tags.includes(selectedCategory));
+  }, [selectedCategory]);
 
   return (
     <View style={styles.mainContainer}>
-      {/* Header Section */}
       <View style={styles.headerContainer}>
         <Text style={styles.header}>ClubRank</Text>
       </View>
 
-      {/* Centered Title with Dropdown and Profile Pic */}
       <View style={styles.titleContainer}>
         <View style={styles.titleRow}>
           <Image 
@@ -72,33 +82,29 @@ export default function MyNights() {
         </View>
       </View>
 
-      {/* Dropdown Menu */}
       {dropdownVisible && (
         <View style={styles.dropdownMenu}>
-          <TouchableOpacity onPress={() => router.push("/expanded-tabs/Drafts")}>
-            <Text style={styles.dropdownItem}>Drafts</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => router.push("/expanded-tabs/Futurespots")}>
-            <Text style={styles.dropdownItem}>FutureSpots</Text>
-          </TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push("/expanded-tabs/Drafts")}> <Text style={styles.dropdownItem}>Drafts</Text> </TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push("/expanded-tabs/Futurespots")}> <Text style={styles.dropdownItem}>FutureSpots</Text> </TouchableOpacity>
         </View>
       )}
 
-      {/* Category Tabs */}
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryScroll}>
-        {["All Venues", "Bars", "Clubs", "Raves", "Jazz"].map((category, index) => (
-          <TouchableOpacity key={index} style={[styles.categoryButton, index === 0 && styles.activeCategory]}>
+        {allTags.map((category, index) => (
+          <TouchableOpacity 
+            key={category} 
+            style={[styles.categoryButton, selectedCategory === category && styles.activeCategory]} 
+            onPress={() => setSelectedCategory(category)}
+          >
             <Text style={styles.categoryText}>{category}</Text>
           </TouchableOpacity>
         ))}
       </ScrollView>
 
-      {/* Your Rankings Title */}
       <Text style={styles.rankingsTitle}>Your Rankings</Text>
 
-      {/* All Venues Scrollable */}
       <ScrollView style={styles.rankingsContainer}>
-        {rankings.map((venue) => (
+        {filteredRankings.map((venue) => (
           <View key={venue.id} style={styles.venueCard}>
             <Image source={venue.image} style={styles.venueImage} />
             <View style={styles.venueInfo}>
@@ -115,17 +121,11 @@ export default function MyNights() {
                 <Text style={styles.reviewText}>{venue.review}</Text>
               </View>
               <Text style={styles.userTags}>{venue.users}</Text>
-              
-              {/* Rating & Icons */}
               <View style={styles.ratingContainer}>
                 <Text style={[styles.rating, getRatingStyle(venue.rating)]}>{venue.rating}</Text>
                 <View style={styles.iconContainer}>
-                  <TouchableOpacity>
-                    <Text style={styles.icon}>✎</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity>
-                    <Text style={styles.icon}>🗑</Text>
-                  </TouchableOpacity>
+                  <TouchableOpacity><Text style={styles.icon}>✎</Text></TouchableOpacity>
+                  <TouchableOpacity><Text style={styles.icon}>🗑</Text></TouchableOpacity>
                 </View>
               </View>
             </View>
@@ -136,11 +136,10 @@ export default function MyNights() {
   );
 }
 
-// Function to color rating based on value
 const getRatingStyle = (rating: number) => {
-  if (rating >= 8) return { backgroundColor: "#4CAF50" }; // Green
-  if (rating >= 5) return { backgroundColor: "#FFC107" }; // Yellow
-  return { backgroundColor: "#F44336" }; // Red
+  if (rating >= 8) return { backgroundColor: "#4CAF50" };
+  if (rating >= 5) return { backgroundColor: "#FFC107" };
+  return { backgroundColor: "#F44336" };
 };
 
 const styles = StyleSheet.create({

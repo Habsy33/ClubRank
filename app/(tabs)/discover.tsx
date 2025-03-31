@@ -1,8 +1,15 @@
-import React from "react";
-import { View, Text, TextInput, TouchableOpacity, Image, ScrollView, StyleSheet } from "react-native";
+import React, { useState } from "react";
+import { View, Text, TextInput, TouchableOpacity, Image, ScrollView, StyleSheet, Modal } from "react-native";
 import { Colors } from "../../styles/colors";
+import { Ionicons } from '@expo/vector-icons';
 
-// Dummy venue data
+const allCategories = [
+  'Nightclub', 'Dive Bar', 'Rooftop Bar', 'Speakeasy', 'Sports Bar', 'Cocktail Lounge', 'Pool Bar',
+  'Karaoke Bar', 'Irish Pub', 'Wine Bar', 'Tiki Bar', 'Gastropub', 'Strip Club', 'Hookah Lounge', 'Dance Club', 'Rave Venue',
+  'Jazz', 'Blues', 'EDM', 'Country', 'Hip-Hop', 'Techno', 'Live Band', 'Acoustic', 'Reggae', 'Classic Rock', 'House', 'Latin', 'Punk Rock', 'Pop Hits', 'Indie',
+  'Crowded', 'Intimate', 'Classy', 'Grimy', 'Creepy', 'Tourist Trap', 'Chill', 'Trendy', 'Locals-Only', 'Dance Floor', 'Loud', 'Romantic', 'Retro', 'Biker-Friendly', 'College Hangout'
+];
+
 const venues = [
   { id: 1, name: "Balls", tags: ["Bar", "Jazz"], distance: "1.1km", rating: 9.4, reviews: "10+ Reviews", image: require("../../assets/images/hidenseek.png"), userNote: "@habeeb has been here" },
   { id: 2, name: "Shaft", tags: ["Rave", "Techno"], distance: "1.4km", rating: 9.2, reviews: "3 Reviews", image: require("../../assets/images/hidenseek.png") },
@@ -10,69 +17,60 @@ const venues = [
 ];
 
 const getRatingStyle = (rating: number) => {
-  if (rating >= 8) return { backgroundColor: "#4CAF50" }; // Green
-  if (rating >= 5) return { backgroundColor: "#FFC107" }; // Yellow
-  return { backgroundColor: "#F44336" }; // Red
+  if (rating >= 8) return styles.ratingGreen;
+  if (rating >= 5) return styles.ratingYellow;
+  return styles.ratingRed;
 };
 
 export default function Discover() {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState('');
+
   return (
     <View style={styles.mainContainer}>
       <Text style={styles.header}>ClubRank</Text>
       <Text style={styles.header1}>Nightlife Venue Finder</Text>
 
-      {/* Subheading */}
       <View style={styles.subHeaderContainer}>
         <Text style={styles.subHeader}>Fresh Finds</Text>
       </View>
 
-      {/* Search Inputs */}
       <TextInput placeholder="Search Venues..." style={styles.searchBar} placeholderTextColor="#999" />
 
-      {/* Categories */}
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryScroll}>
-        {["All Venues", "Distance","Bars", "Clubs", "Raves", "Jazz", "Capacity"].map((category, index) => (
+        {["All Venues", "Distance", "Bars", "Clubs", "Raves", "Jazz", "Capacity"].map((category, index) => (
           <TouchableOpacity key={category} style={[styles.categoryButton, index === 0 && styles.activeCategory]}>
             <Text style={styles.categoryText}>{category}</Text>
           </TouchableOpacity>
         ))}
+        <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.categoryButton}>
+          <Text style={styles.categoryText}>See All</Text>
+        </TouchableOpacity>
       </ScrollView>
 
-      {/* Top Venues */}
       <Text style={styles.sectionTitle}>Top Venues</Text>
       <ScrollView style={styles.venueList}>
-        {venues.map((venue, index) => (
+        {venues.map((venue) => (
           <View key={venue.id} style={styles.venueCard}>
             <Image source={venue.image} style={styles.venueImage} />
             <View style={styles.venueInfo}>
               <View style={styles.venueHeader}>
                 <Text style={styles.venueName}>{venue.name}</Text>
-                <View style={styles.tagContainer}>
-                  {venue.tags.map((tag) => (
-                    <Text key={tag} style={styles.tag}>{tag}</Text>
-                  ))}
-                </View>
+                <Text style={styles.distance}>{venue.distance}</Text>
               </View>
-              <Text style={styles.distance}>{venue.distance}</Text>
+              <View style={styles.tagContainer}>
+                {venue.tags.map((tag) => (
+                  <Text key={tag} style={styles.tag}>{tag}</Text>
+                ))}
+              </View>
               {venue.userNote && <Text style={styles.userNote}>{venue.userNote}</Text>}
-              
-              {/* Rating & Icons */}
               <View style={styles.ratingContainer}>
-                <View style={styles.ratingGroup}>
-                  <Text style={styles.starIcon}>★</Text>
-                  <Text style={styles.rating}>{venue.rating}</Text>
-                  <Text style={styles.reviews}>{venue.reviews}</Text>
-                </View>
+                <Text style={[styles.rating, getRatingStyle(venue.rating)]}>{venue.rating}</Text>
+                <Text style={styles.reviews}>{venue.reviews}</Text>
                 <View style={styles.iconContainer}>
-                  <TouchableOpacity>
-                    <Text style={styles.outlineIcon}>☆</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity>
-                    <Text style={styles.outlineIcon}>+</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity>
-                    <Text style={styles.outlineIcon}>⚑</Text>
-                  </TouchableOpacity>
+                  <Ionicons name="star-outline" size={20} color="gray" />
+                  <Ionicons name="add" size={20} color="gray" />
+                  <Ionicons name="bookmark-outline" size={20} color="gray" />
                 </View>
               </View>
             </View>
@@ -80,10 +78,26 @@ export default function Discover() {
         ))}
       </ScrollView>
 
-      {/* Show More Button */}
       <TouchableOpacity style={styles.showMoreButton}>
         <Text style={styles.showMoreText}>Show More</Text>
       </TouchableOpacity>
+
+      {/* Modal for All Categories */}
+      <Modal visible={modalVisible} animationType="slide">
+        <View style={{ flex: 1, padding: 20, backgroundColor: 'white' }}>
+          <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 20 }}>Select a Category</Text>
+          <ScrollView>
+            {allCategories.map((cat) => (
+              <TouchableOpacity key={cat} style={{ paddingVertical: 10 }} onPress={() => { setSelectedCategory(cat); setModalVisible(false); }}>
+                <Text style={{ fontSize: 18 }}>{cat}</Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+          <TouchableOpacity onPress={() => setModalVisible(false)} style={{ marginTop: 20 }}>
+            <Text style={{ color: 'red', fontSize: 16 }}>Close</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -162,13 +176,13 @@ const styles = StyleSheet.create({
   venueCard: {
     flexDirection: 'row',
     backgroundColor: '#fff',
-    padding: 10,
-    marginBottom: 8,
+    padding: 12,
+    marginBottom: 10,
     borderRadius: 10,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
     elevation: 8,
   },
   venueImage: {
@@ -182,9 +196,9 @@ const styles = StyleSheet.create({
   },
   venueHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 8,
+    gap: 8,
+    marginBottom: 4,
   },
   venueName: {
     fontSize: 16,
@@ -205,7 +219,6 @@ const styles = StyleSheet.create({
   distance: {
     fontSize: 13,
     color: '#666',
-    marginBottom: 3,
   },
   userNote: {
     fontSize: 13,
@@ -218,28 +231,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 'auto',
   },
-  ratingGroup: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-  },
   rating: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: Colors.text.warning,
+    color: '#fff',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
   },
   reviews: {
     fontSize: 13,
     color: '#666',
     marginLeft: 4,
-  },
-  starIcon: {
-    fontSize: 18,
-    color: Colors.text.warning,
-  },
-  outlineIcon: {
-    fontSize: 20,
-    color: '#666',
   },
   iconContainer: {
     flexDirection: 'row',
@@ -259,5 +262,14 @@ const styles = StyleSheet.create({
     color: Colors.primary.orange,
     fontWeight: "bold",
     fontSize: 14,
+  },
+  ratingGreen: {
+    backgroundColor: "#4CAF50",
+  },
+  ratingYellow: {
+    backgroundColor: "#FFC107",
+  },
+  ratingRed: {
+    backgroundColor: "#F44336",
   },
 });
