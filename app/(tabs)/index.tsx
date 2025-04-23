@@ -31,6 +31,7 @@ export default function HomeScreen() {
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [activeFilter, setActiveFilter] = useState('All');
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -166,6 +167,22 @@ export default function HomeScreen() {
     router.replace(tab === 'Friends Going' ? '/expanded-tabs/friendsGoing' : '/');
   };
 
+  const filterReviews = (reviews: Review[], filter: string) => {
+    if (filter === 'All') return reviews;
+    
+    const filterMap: { [key: string]: string[] } = {
+      'Nightclubs': ['Club', 'Dance Club', 'Rave Venue'],
+      'Bars': ['Bar', 'Dive Bar', 'Rooftop Bar', 'Speakeasy', 'Sports Bar', 'Cocktail Lounge', 'Pool Bar', 'Karaoke Bar', 'Irish Pub', 'Wine Bar', 'Tiki Bar', 'Gastropub'],
+      'Raves': ['Rave', 'EDM', 'Techno', 'House']
+    };
+
+    return reviews.filter(review => 
+      filterMap[filter]?.includes(review.type)
+    );
+  };
+
+  const filteredReviews = filterReviews(reviews, activeFilter);
+
   return (
     <View style={styles.container}>
       <Text style={styles.header}>ClubRank</Text>
@@ -184,8 +201,18 @@ export default function HomeScreen() {
 
       <View style={styles.filters}>
         {['All', 'Nightclubs', 'Bars', 'Raves'].map(filter => (
-          <TouchableOpacity key={filter} style={styles.filterButton}>
-            <Text>{filter}</Text>
+          <TouchableOpacity 
+            key={filter} 
+            style={[
+              styles.filterButton,
+              activeFilter === filter && styles.activeFilterButton
+            ]}
+            onPress={() => setActiveFilter(filter)}
+          >
+            <Text style={[
+              styles.filterButtonText,
+              activeFilter === filter && styles.activeFilterButtonText
+            ]}>{filter}</Text>
           </TouchableOpacity>
         ))}
         <TouchableOpacity onPress={() => setModalVisible(true)}>
@@ -194,7 +221,7 @@ export default function HomeScreen() {
       </View>
 
       <FlatList
-        data={reviews}
+        data={filteredReviews}
         keyExtractor={(item) => item.id}
         renderItem={renderReview}
         contentContainerStyle={styles.listContainer}
@@ -234,7 +261,23 @@ const styles = StyleSheet.create({
   subHeader: { fontSize: 22, marginBottom: 5, color: '#9C9BA6' },
   itemCount: { fontSize: 15, color: 'gray', marginBottom: 20 },
   filters: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20, },
-  filterButton: { paddingHorizontal: 15, padding: 10, backgroundColor: 'rgba(255, 119, 34, 0.28)', borderRadius: 15, marginRight: 5,  },
+  filterButton: { 
+    paddingHorizontal: 15, 
+    padding: 10, 
+    backgroundColor: 'rgba(255, 119, 34, 0.28)', 
+    borderRadius: 15, 
+    marginRight: 5,
+  },
+  activeFilterButton: {
+    backgroundColor: '#FF5733',
+  },
+  filterButtonText: {
+    color: '#666',
+  },
+  activeFilterButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
   seeAll: { color: '#FF5733', fontWeight: 'bold', marginTop: 10, },
   listContainer: { paddingBottom: 80 },
   card: { flexDirection: 'row', padding: 10, marginBottom: 10, borderRadius: 8, backgroundColor: '#f9f9f9', alignItems: 'center',  shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 4, elevation: 5 },
