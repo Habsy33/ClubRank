@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
   itemCount: { fontSize: 15, color: 'gray', marginBottom: 20 },
   filters: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20, },
   filterButton: { paddingHorizontal: 15, padding: 10, backgroundColor: 'rgba(255, 119, 34, 0.28)', borderRadius: 15, marginRight: 5,  },
-  seeAll: { color: '#FF5733', fontWeight: 'bold' },
+  seeAll: { color: '#FF5733', fontWeight: 'bold', marginTop: 10, },
   listContainer: { paddingBottom: 80 },
   card: { flexDirection: 'row', padding: 10, marginBottom: 10, borderRadius: 8, backgroundColor: '#f9f9f9', alignItems: 'center',  shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 4, elevation: 5 },
   largeImage: { width: 80, height: 120, borderRadius: 10, marginRight: 10, },
