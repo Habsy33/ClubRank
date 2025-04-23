@@ -32,25 +32,7 @@ export default function HomeScreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [activeFilter, setActiveFilter] = useState('All');
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) setLoading(false);
-      else router.replace('/(auth)/signIn');
-    });
-    return () => unsubscribe();
-  }, []);
-
-  if (loading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#FF5733" />
-      </View>
-    );
-  }
-
-
-  const reviews: Review[] = [
+  const [originalReviews, setOriginalReviews] = useState<Review[]>([
     {
       id: '1',
       venue: 'Hide & Seek',
@@ -117,7 +99,46 @@ export default function HomeScreen() {
       image: require('@/assets/images/rave.jpg'),
       reviewCount: 20,
     },
-  ];
+  ]);
+  const [displayedReviews, setDisplayedReviews] = useState<Review[]>([]);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) setLoading(false);
+      else router.replace('/(auth)/signIn');
+    });
+    return () => unsubscribe();
+  }, []);
+
+  // Update displayed reviews whenever activeTab or activeFilter changes
+  useEffect(() => {
+    let filteredReviews = [...originalReviews];
+
+    // Apply tab-based sorting
+    if (activeTab === 'Top Reviews') {
+      filteredReviews.sort((a, b) => b.rating - a.rating);
+    } else if (activeTab === 'Near You') {
+      filteredReviews.sort((a, b) => {
+        const distanceA = parseFloat(a.distance.replace('km', ''));
+        const distanceB = parseFloat(b.distance.replace('km', ''));
+        return distanceA - distanceB;
+      });
+    }
+
+    // Apply category filtering
+    if (activeFilter !== 'All') {
+      const filterMap: { [key: string]: string[] } = {
+        'Nightclubs': ['Club', 'Dance Club', 'Rave Venue'],
+        'Bars': ['Bar', 'Dive Bar', 'Rooftop Bar', 'Speakeasy', 'Sports Bar', 'Cocktail Lounge', 'Pool Bar', 'Karaoke Bar', 'Irish Pub', 'Wine Bar', 'Tiki Bar', 'Gastropub'],
+        'Raves': ['Rave', 'EDM', 'Techno', 'House']
+      };
+      filteredReviews = filteredReviews.filter(review => 
+        filterMap[activeFilter]?.includes(review.type)
+      );
+    }
+
+    setDisplayedReviews(filteredReviews);
+  }, [activeTab, activeFilter, originalReviews]);
 
   const truncateReview = (text: string, length: number) =>
     text.length > length ? text.substring(0, length) + '...' : text;
@@ -164,24 +185,10 @@ export default function HomeScreen() {
 
   const handleTabPress = (tab: string) => {
     setActiveTab(tab);
-    router.replace(tab === 'Friends Going' ? '/expanded-tabs/friendsGoing' : '/');
+    if (tab === 'Friends Going') {
+      router.replace('/expanded-tabs/friendsGoing');
+    }
   };
-
-  const filterReviews = (reviews: Review[], filter: string) => {
-    if (filter === 'All') return reviews;
-    
-    const filterMap: { [key: string]: string[] } = {
-      'Nightclubs': ['Club', 'Dance Club', 'Rave Venue'],
-      'Bars': ['Bar', 'Dive Bar', 'Rooftop Bar', 'Speakeasy', 'Sports Bar', 'Cocktail Lounge', 'Pool Bar', 'Karaoke Bar', 'Irish Pub', 'Wine Bar', 'Tiki Bar', 'Gastropub'],
-      'Raves': ['Rave', 'EDM', 'Techno', 'House']
-    };
-
-    return reviews.filter(review => 
-      filterMap[filter]?.includes(review.type)
-    );
-  };
-
-  const filteredReviews = filterReviews(reviews, activeFilter);
 
   return (
     <View style={styles.container}>
@@ -197,7 +204,7 @@ export default function HomeScreen() {
       </View>
 
       <Text style={styles.subHeader}>Your Friends Reviews</Text>
-      <Text style={styles.itemCount}>Total {reviews.length} items</Text>
+      <Text style={styles.itemCount}>Total {displayedReviews.length} items</Text>
 
       <View style={styles.filters}>
         {['All', 'Nightclubs', 'Bars', 'Raves'].map(filter => (
@@ -221,7 +228,7 @@ export default function HomeScreen() {
       </View>
 
       <FlatList
-        data={filteredReviews}
+        data={displayedReviews}
         keyExtractor={(item) => item.id}
         renderItem={renderReview}
         contentContainerStyle={styles.listContainer}
