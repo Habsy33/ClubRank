@@ -233,7 +233,7 @@ export default function HomeScreen() {
 
       {/* Modal for All Categories */}
       <Modal visible={modalVisible} animationType="slide">
-        <View style={{ flex: 1, padding: 20, backgroundColor: 'white' }}>
+        <View style={{ flex: 1, padding: 20, backgroundColor:'white' }}>
           <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 20 }}>Select a Category</Text>
           <ScrollView>
             {allCategories.map((cat) => (
